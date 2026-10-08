@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f2">
+    <meta name="description" content="Find and understand Indian government schemes with SarkariSaathi.">
+    <title>SarkariSaathi | Government schemes, made clearer</title>
+    <link rel="preconnect" href="https://cloudfront-us-east-1.images.arcpublishing.com">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="SarkariSaathi home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="brand-name">Sarkari<span>Saathi</span></span>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#schemes" data-i18n="navSchemes">Schemes</a>
+          <a href="#assistant" data-i18n="navAssistant">Ask Saathi</a>
+          <a href="#in-person" data-i18n="navHelp">Get help</a>
+        </nav>
+        <div class="header-tools">
+          <label class="sr-only" for="language" data-i18n="languageLabel">Choose language</label>
+          <select id="language" aria-label="Choose language">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button class="icon-button saved-filter" type="button" aria-label="Show saved schemes" title="Saved schemes" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.7L6 21V4.75Z"/><path d="M9 7h6"/></svg>
+          </button>
+          <button class="profile-button" type="button" data-open-profile>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.25"/><path d="M5.5 20c.5-3.25 2.75-5 6.5-5s6 1.75 6.5 5"/></svg>
+            <span data-i18n="myProfile">My profile</span>
+          </button>
+          <button class="icon-button demo-logout" id="demo-logout" type="button" data-i18n-aria-label="demoLogout" aria-label="Sign out of demo" title="Sign out of demo" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/></svg>
+          </button>
+        </div>
+        <button class="mobile-menu icon-button" type="button" aria-label="Open navigation" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="page-shell">
+      <section id="top" class="welcome-row" aria-labelledby="welcome-title">
+        <div class="welcome-copy">
+          <p class="eyebrow"><span class="status-dot"></span><span data-i18n="eyebrow">YOUR GOVERNMENT BENEFITS COMPANION</span></p>
+          <p class="welcome-brand">SarkariSaathi</p>
+          <h1 id="welcome-title" data-i18n="welcomeTitle">Your voice. Your language. Your welfare.</h1>
+          <p class="welcome-subtitle" data-i18n="welcomeSubtitle">Start with what you need. We’ll help you find a scheme and your next step.</p>
+          <div class="welcome-actions">
+            <button type="button" class="primary-button" id="start-speaking" data-i18n="speakWith">Speak with SarkariSaathi</button>
+            <button type="button" class="outline-button" id="start-typing" data-i18n="typeInstead">Type instead</button>
+            <label class="welcome-language"><span data-i18n="languageLabel">Choose language</span><select id="welcome-language" aria-label="Choose language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="kn">ಕನ್ನಡ</option></select></label>
+          </div>
+          <form class="search-form" id="search-form" role="search">
+            <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+            <label class="sr-only" for="scheme-search" data-i18n="searchLabel">Search by scheme, benefit or need</label>
+            <input id="scheme-search" type="search" maxlength="120" placeholder="Try “support for farmers”" data-i18n-placeholder="searchPlaceholder" autocomplete="off">
+            <button class="voice-button icon-button" id="voice-search" type="button" title="Search by voice" aria-label="Search by voice">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg>
+            </button>
+            <button class="search-submit" type="submit" data-i18n="searchButton">Search</button>
+          </form>
+          <div class="quick-searches" aria-label="Popular searches">
+            <span data-i18n="popular">Popular:</span>
+            <button type="button" data-query="farmer">Farmers</button>
+            <button type="button" data-query="health">Health cover</button>
+            <button type="button" data-query="women">Women</button>
+          </div>
+        </div>
+        <figure class="welcome-image">
+          <img src="https://cloudfront-us-east-1.images.arcpublishing.com/infobae/YFSWHKBSSJHO3DOFN7E3DBLQMY.jpg" alt="A village service-centre operator helping a resident with online government services" fetchpriority="high">
+          <figcaption><span data-i18n="photoCaption">In-person help is available at local service centres.</span> <a href="https://www.infobae.com/america/soluciones/2022/02/23/un-modelo-comunitario-de-conectividad-cambio-la-realidad-de-millones-de-personas-en-la-india/" target="_blank" rel="noreferrer" aria-label="Photo source: Infobae">Infobae</a></figcaption>
+        </figure>
+      </section>
+
+      <section class="need-section" aria-labelledby="need-title">
+        <div class="section-heading"><div><p class="eyebrow" data-i18n="needEyebrow">START WITH YOUR NEED</p><h2 id="need-title" data-i18n="needTitle">What do you need help with?</h2></div></div>
+        <div class="need-grid" role="group" aria-label="Choose a type of support">
+          <button type="button" class="need-option" data-need="agriculture"><span aria-hidden="true">🌾</span><span data-i18n="agriculture">Agriculture</span></button>
+          <button type="button" class="need-option" data-need="education"><span aria-hidden="true">🎓</span><span data-i18n="education">Education</span></button>
+          <button type="button" class="need-option" data-need="housing"><span aria-hidden="true">🏠</span><span data-i18n="housing">Housing</span></button>
+          <button type="button" class="need-option" data-need="health"><span aria-hidden="true">🏥</span><span data-i18n="health">Health</span></button>
+          <button type="button" class="need-option" data-need="employment"><span aria-hidden="true">💼</span><span data-i18n="employment">Employment</span></button>
+          <button type="button" class="need-option" data-need="women"><span aria-hidden="true">👩‍👧</span><span data-i18n="womenFamily">Women & family</span></button>
+          <button type="button" class="need-option" data-need="senior"><span aria-hidden="true">👵</span><span data-i18n="senior">Senior citizen</span></button>
+          <button type="button" class="need-option" data-need="finance"><span aria-hidden="true">💰</span><span data-i18n="finance">Financial help</span></button>
+        </div>
+      </section>
+
+      <section id="journey-dashboard" class="journey-dashboard" aria-labelledby="dashboard-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow" data-i18n="journeyEyebrow">YOUR SEARCH</p><h2 id="dashboard-title" data-i18n="dashboardTitle">Your support dashboard</h2></div><button id="new-search" class="text-button" type="button" data-i18n="newSearch">Start new search</button></div>
+        <div class="dashboard-grid">
+          <div><span data-i18n="myNeed">My need</span><strong id="dashboard-need">—</strong></div>
+          <div><span data-i18n="relevantSchemes">Relevant schemes</span><strong id="dashboard-schemes">0</strong></div>
+          <div><span data-i18n="eligibility">Eligibility</span><strong id="dashboard-eligibility">—</strong></div>
+          <div><span data-i18n="documentsReady">Documents identified</span><strong id="dashboard-documents">—</strong></div>
+        </div>
+        <p id="dashboard-next" class="dashboard-next"></p>
+        <div id="agent-demo-receipt" class="agent-demo-receipt" hidden></div>
+      </section>
+
+      <section class="content-grid" aria-label="Scheme search and assistant">
+        <div class="catalog-column">
+          <div class="section-heading" id="schemes">
+            <div>
+              <p class="eyebrow" data-i18n="catalogEyebrow">EXPLORE SUPPORT</p>
+              <h2 data-i18n="catalogTitle">Schemes for every chapter</h2>
+            </div>
+            <span class="result-count" id="result-count" aria-live="polite"></span>
+          </div>
+          <div class="category-filter" role="group" aria-label="Filter schemes by category">
+            <button type="button" class="category-button active" data-category="all" aria-pressed="true" data-i18n="allSchemes">All schemes</button>
+            <button type="button" class="category-button" data-category="agriculture" aria-pressed="false" data-i18n="agriculture">Agriculture</button>
+            <button type="button" class="category-button" data-category="education" aria-pressed="false" data-i18n="education">Education</button>
+            <button type="button" class="category-button" data-category="housing" aria-pressed="false" data-i18n="housing">Housing</button>
+            <button type="button" class="category-button" data-category="health" aria-pressed="false" data-i18n="health">Health</button>
+            <button type="button" class="category-button" data-category="employment" aria-pressed="false" data-i18n="employment">Employment</button>
+            <button type="button" class="category-button" data-category="women" aria-pressed="false" data-i18n="womenFamily">Women & family</button>
+            <button type="button" class="category-button" data-category="senior" aria-pressed="false" data-i18n="senior">Senior citizens</button>
+            <button type="button" class="category-button" data-category="finance" aria-pressed="false" data-i18n="finance">Financial help</button>
+          </div>
+          <div id="scheme-list" class="scheme-list" aria-live="polite" aria-busy="true">
+            <div class="loading-state"><span class="loading-spinner" aria-hidden="true"></span><span data-i18n="loading">Loading schemes…</span></div>
+          </div>
+          <div id="empty-state" class="empty-state" hidden>
+            <span class="empty-mark" aria-hidden="true">?</span>
+            <h3 data-i18n="noResults">No schemes found</h3>
+            <p data-i18n="tryAnother">Try another search or choose a different category.</p>
+            <button type="button" class="text-button" id="clear-search" data-i18n="clearSearch">Clear search</button>
+          </div>
+        </div>
+
+        <aside class="right-rail">
+          <section id="assistant" class="assistant-panel" aria-labelledby="assistant-title">
+            <div class="assistant-heading">
+              <span class="assistant-avatar" aria-hidden="true"><span></span><span></span></span>
+              <div><p class="eyebrow" data-i18n="saathiOnline">SAATHI IS HERE</p><h2 id="assistant-title" data-i18n="askTitle">What can I help you find?</h2></div>
+            </div>
+            <div class="demo-scenarios" aria-label="Demo scenarios">
+              <span data-i18n="tryDemo">Try a demo</span>
+              <button type="button" data-scenario="farmer" data-i18n="demoFarmer">Farmer</button>
+              <button type="button" data-scenario="student" data-i18n="demoStudent">Student</button>
+              <button type="button" data-scenario="senior" data-i18n="demoSenior">Senior citizen</button>
+            </div>
+            <section class="agent-demo-launch" aria-labelledby="agent-demo-title">
+              <div class="agent-demo-copy"><p class="eyebrow" data-i18n="agentDemoEyebrow">SAFE APPLICATION DEMO</p><h3 id="agent-demo-title" data-i18n="agentDemoTitle">Let Saathi prepare a sample application</h3><p data-i18n="agentDemoText">Watch Saathi fill a fictional application virtually, inside this app. Nothing is sent to a government service.</p></div>
+              <button type="button" id="start-agent-demo" class="primary-button" data-i18n="agentDemoButton">Let Saathi take the wheel</button>
+              <p id="agent-demo-status" class="agent-demo-status" role="status" aria-live="polite" hidden></p>
+            </section>
+            <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions text">
+              <div class="chat-bubble assistant-bubble"><p data-i18n="assistantIntro">Tell me what you need help with. I can look up schemes and explain the next steps.</p></div>
+            </div>
+            <button type="button" class="text-button clear-chat" id="clear-chat" data-i18n="clearConversation">Clear conversation</button>
+            <div class="suggestion-list" aria-label="Suggested questions">
+              <button type="button" data-prompt="I am a farmer. What support can I apply for?" data-i18n="promptFarmer">I'm a farmer</button>
+              <button type="button" data-prompt="How can a woman get an LPG connection?" data-i18n="promptLpg">I need an LPG connection</button>
+            </div>
+            <form id="assistant-form" class="assistant-form">
+              <label class="sr-only" for="assistant-input" data-i18n="askPlaceholderLabel">Ask SarkariSaathi a question</label>
+              <textarea id="assistant-input" rows="2" maxlength="1200" placeholder="Type your question…" data-i18n-placeholder="askPlaceholder"></textarea>
+              <div class="assistant-controls">
+                <button class="voice-button icon-button" id="voice-chat" type="button" title="Speak your question" aria-label="Speak your question" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg></button>
+                <span id="voice-state" class="voice-state" role="status" hidden></span>
+                <span class="privacy-note" data-i18n="privacyNote">No ID numbers, please.</span>
+                <button class="send-button" type="submit" aria-label="Send question" title="Send question"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 16-7-7 16-2.5-6.5L4 11Z"/><path d="m10.5 13.5 4-4"/></svg></button>
+              </div>
+            </form>
+            <p class="assistant-disclaimer" data-i18n="assistantDisclaimer">Answers are a guide. The official department decides eligibility.</p>
+          </section>
+
+          <section class="profile-prompt" aria-labelledby="profile-title">
+            <span class="profile-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.5 3.1 7.6 7.5 9.5 4.4-1.9 7.5-5 7.5-9.5V6L12 3Z"/><path d="m8.5 12 2.25 2.25 4.75-5"/></svg></span>
+            <div><p class="eyebrow" data-i18n="quickCheck">QUICK CHECK</p><h2 id="profile-title" data-i18n="checkTitle">See what may fit you</h2><p data-i18n="checkText">A few details can narrow down your options.</p></div>
+            <button type="button" class="outline-button" data-open-profile><span data-i18n="checkButton">Check eligibility</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          </section>
+          <p class="catalog-note"><span class="note-icon" aria-hidden="true">i</span><span data-i18n="catalogNote">Scheme information is from official sources. Please confirm current rules before applying.</span></p>
+        </aside>
+      </section>
+
+      <section id="in-person" class="human-help" aria-labelledby="human-help-title">
+        <span class="human-help-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 20v-6h6v6M9 9h.01M15 9h.01"/></svg></span>
+        <div><p class="eyebrow" data-i18n="offlineEyebrow">PREFER IN-PERSON HELP?</p><h2 id="human-help-title" data-i18n="offlineTitle">Find a Common Service Centre</h2><p data-i18n="offlineText">A nearby CSC can help with online forms and document checks.</p></div>
+        <form id="csc-form" class="csc-form">
+          <label class="sr-only" for="csc-location" data-i18n="locationLabel">City, district or PIN code</label>
+          <input id="csc-location" type="text" maxlength="100" placeholder="City, district or PIN code" data-i18n-placeholder="locationPlaceholder">
+          <button type="submit" class="primary-button"><span data-i18n="findCsc">Find a CSC</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12Z"/><circle cx="12" cy="9" r="2.2"/></svg></button>
+        </form>
+      </section>
+      <footer class="site-footer"><p data-i18n="footerNote">SarkariSaathi is an independent guide and is not a government website.</p><a href="https://www.india.gov.in/" target="_blank" rel="noreferrer" data-i18n="indiaPortal">National Portal of India <span aria-hidden="true">↗</span></a></footer>
+    </main>
+
+    <div id="compare-dock" class="compare-dock" hidden>
+      <span id="compare-summary"></span>
+      <button type="button" class="text-button" id="clear-compare" data-i18n="clear">Clear</button>
+      <button type="button" class="primary-button" id="compare-open" data-i18n="compareNow">Compare schemes</button>
+    </div>
+
+    <dialog id="profile-dialog" class="app-dialog">
+      <form id="profile-form" method="dialog">
+        <div class="dialog-header"><div><p class="eyebrow" data-i18n="profileEyebrow">YOUR DETAILS</p><h2 data-i18n="profileDialogTitle">A clearer eligibility check</h2></div><button class="icon-button dialog-close" type="button" data-close-dialog aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+        <p class="dialog-intro" data-i18n="profileDialogIntro">Share only what you’re comfortable sharing. These answers stay in this browser session and are not saved.</p>
+        <div class="profile-fields">
+          <label><span data-i18n="ageLabel">Age</span><input name="age" type="number" min="0" max="120" inputmode="numeric" placeholder="e.g. 42"></label>
+          <label><span data-i18n="genderLabel">Applicant</span><select name="gender"><option value="unknown" data-i18n="preferNot">Choose or skip</option><option value="woman" data-i18n="woman">Woman</option><option value="man" data-i18n="man">Man</option><option value="other" data-i18n="other">Another identity</option></select></label>
+          <label><span data-i18n="occupationLabel">Main occupation</span><select name="occupation"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="farmer" data-i18n="farmer">Farmer</option><option value="other" data-i18n="otherOccupation">Other</option></select></label>
+          <label><span data-i18n="landLabel">Does your farmer family hold cultivable land?</span><select name="cultivableLand"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="poorLabel">Does your household meet the PMUY poor-household declaration?</span><select name="poorHousehold"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="lpgLabel">Is an LPG connection already registered in your household?</span><select name="householdLpg"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="taxLabel">Did anyone in the farmer family pay income tax last year?</span><select name="incomeTaxPayer"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="employmentLabel">Government employment in the farmer family</span><select name="publicEmployment"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="none" data-i18n="none">None</option><option value="regular" data-i18n="regularEmployee">Serving or retired (except Group D/MTS)</option><option value="group-d" data-i18n="groupD">Group D / MTS</option></select></label>
+          <label><span data-i18n="pensionLabel">Covered pension of ₹10,000/month or more?</span><select name="monthlyPension"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="over-10000" data-i18n="yes">Yes</option><option value="under-10000" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="professionalLabel">Practising registered professional in the farmer family?</span><select name="registeredProfessional"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="institutionalLabel">Is the landholder an institution?</span><select name="institutionalLand"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label><span data-i18n="listedLabel">Is your household already listed for PM-JAY?</span><select name="pmjayListed"><option value="unknown" data-i18n="choose">Choose or skip</option><option value="yes" data-i18n="yes">Yes</option><option value="no" data-i18n="no">No</option></select></label>
+          <label class="full-field"><span data-i18n="stateLabel">State or Union Territory</span><select name="state"><option value="" data-i18n="optional">Optional</option><option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chhattisgarh</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option><option>Other Union Territory</option></select></label>
+        </div>
+        <div class="dialog-actions"><button type="button" class="text-button" data-close-dialog data-i18n="cancel">Cancel</button><button type="submit" class="primary-button" data-i18n="runCheck">Check my options</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="scheme-dialog" class="app-dialog wide-dialog"><div id="scheme-dialog-content"></div></dialog>
+    <dialog id="compare-dialog" class="app-dialog wide-dialog"><div id="compare-dialog-content"></div></dialog>
+    <dialog id="demo-login-dialog" class="app-dialog demo-login-dialog" aria-labelledby="demo-login-title">
+      <form id="demo-login-form" class="demo-login-form">
+        <div class="dialog-header"><div><p class="eyebrow" data-i18n="demoLoginEyebrow">DEMO ACCESS</p><h2 id="demo-login-title" data-i18n="demoLoginTitle">Sign in to SarkariSaathi</h2></div></div>
+        <p class="dialog-intro" data-i18n="demoLoginIntro">Use this shared demo account to open the prototype. Do not use a personal password.</p>
+        <div class="demo-login-credentials"><strong data-i18n="demoLoginCredentialTitle">Public demo credentials</strong><span><span data-i18n="demoUsernameLabel">Username</span><code>demo@sarkarisaathi.in</code></span><span><span data-i18n="demoPasswordLabel">Password</span><code>SaathiDemo26!</code></span></div>
+        <label class="demo-login-field"><span data-i18n="demoUsernameLabel">Username</span><input id="demo-login-username" name="username" type="email" autocomplete="username" required value="demo@sarkarisaathi.in"></label>
+        <label class="demo-login-field"><span data-i18n="demoPasswordLabel">Password</span><input id="demo-login-password" name="password" type="password" autocomplete="current-password" required></label>
+        <p class="demo-login-notice" data-i18n="demoLoginNotice">Demo-only access. No account or personal password is stored.</p>
+        <p id="demo-login-status" class="demo-login-status" role="alert" hidden></p>
+        <button class="primary-button" type="submit" data-i18n="demoLoginButton">Sign in</button>
+      </form>
+    </dialog>
+
+    <dialog id="agent-demo-dialog" class="app-dialog wide-dialog agent-demo-dialog" aria-labelledby="agent-demo-workspace-title">
+      <div class="agent-demo-workspace">
+        <header class="agent-demo-header">
+          <div><p class="eyebrow" data-i18n="agentDemoEyebrow">SAFE APPLICATION DEMO</p><h2 id="agent-demo-workspace-title" data-i18n="agentDemoVirtualTitle">Virtual agent workspace</h2><p data-i18n="agentDemoVirtualText">Watch Saathi prepare a fictional sample application inside the app.</p></div>
+          <button class="icon-button dialog-close" type="button" data-close-dialog data-i18n-aria-label="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        </header>
+        <div class="agent-demo-layout">
+          <aside class="agent-demo-process" aria-labelledby="agent-demo-process-title">
+            <div class="agent-demo-presence"><span class="assistant-avatar" aria-hidden="true"><span></span><span></span></span><div><strong>SarkariSaathi</strong><span class="agent-live-label" data-i18n="agentDemoWorking">WORKING IN DEMO MODE</span></div></div>
+            <h3 id="agent-demo-process-title" data-i18n="agentDemoProcessTitle">Saathi's steps</h3>
+            <ol class="agent-demo-steps">
+              <li data-agent-step="0" data-state="current" data-i18n="agentDemoUnderstand">Understand the request</li>
+              <li data-agent-step="1" data-state="pending" data-i18n="agentDemoSearch">Find a matching scheme</li>
+              <li data-agent-step="2" data-state="pending" data-i18n="agentDemoCheck">Check sample details</li>
+              <li data-agent-step="3" data-state="pending" data-i18n="agentDemoPrepare">Prepare sample form</li>
+              <li data-agent-step="4" data-state="pending" data-i18n="agentDemoReview">Pause for your review</li>
+            </ol>
+            <p id="agent-demo-modal-status" class="agent-demo-modal-status" role="status" aria-live="polite" data-i18n="agentDemoNeedsDetails">Enter your details to begin. They stay in this browser session.</p>
+          </aside>
+          <section class="agent-demo-application" aria-labelledby="agent-demo-form-title">
+            <section id="agent-demo-intake" class="agent-demo-intake" aria-labelledby="agent-demo-intake-title">
+              <div class="virtual-portal-heading"><div><p class="eyebrow" data-i18n="agentDemoSandboxBadge">LOCAL SIMULATION</p><h3 id="agent-demo-intake-title" data-i18n="agentDemoIntakeTitle">Your application details</h3></div><span class="demo-only-stamp">DEMO ONLY</span></div>
+              <p class="agent-demo-form-intro" data-i18n="agentDemoIntakeText">Enter the details you want Saathi to use. These stay in this browser and are not sent to a server.</p>
+              <form id="agent-demo-profile-form">
+                <div class="agent-demo-fields intake-fields">
+                  <label><span data-i18n="agentDemoApplicantLabel">Applicant name</span><input name="applicant" maxlength="80" autocomplete="name" required></label>
+                  <label><span data-i18n="agentDemoStateLabel">State</span><input name="state" maxlength="60" autocomplete="address-level1" required></label>
+                  <label><span data-i18n="agentDemoDistrictLabel">District</span><input name="district" maxlength="80" required></label>
+                  <label><span data-i18n="agentDemoOccupationLabel">Occupation</span><select name="occupation" required><option value="" data-i18n="agentDemoChooseOccupation">Choose one</option><option value="farmer" data-i18n="farmer">Farmer</option><option value="student" data-i18n="demoStudent">Student</option><option value="senior" data-i18n="demoSenior">Senior citizen</option><option value="street-vendor" data-i18n="streetVendor">Street vendor</option><option value="artisan" data-i18n="artisan">Artisan</option><option value="business-owner" data-i18n="businessOwner">Small business owner</option><option value="worker" data-i18n="agentDemoOtherOccupation">Other worker</option><option value="other" data-i18n="otherOccupation">Other</option></select></label>
+                  <label><span data-i18n="ageLabel">Age</span><input name="age" type="number" min="0" max="120" inputmode="numeric"></label>
+                  <label><span data-i18n="genderLabel">Applicant</span><select name="gender"><option value="unknown" data-i18n="agentDemoNotSure">Not sure / skip</option><option value="woman" data-i18n="woman">Woman</option><option value="man" data-i18n="man">Man</option><option value="other" data-i18n="other">Another identity</option></select></label>
+                  <label><span id="agent-demo-income-label" data-i18n="agentDemoIncomeLabel">Annual household income (optional)</span><input name="annualIncome" type="number" min="0" max="100000000" inputmode="numeric"></label>
+                  <label><span data-i18n="agentDemoSchemeLabel">Scheme you want help with</span><select id="agent-demo-scheme" name="schemeId" required><option value="" data-i18n="agentDemoChooseScheme">Choose a scheme</option></select></label>
+                  <div id="agent-demo-dynamic-fields" class="agent-demo-dynamic-fields agent-demo-wide-field"></div>
+                  <label class="agent-demo-wide-field"><span data-i18n="agentDemoPurposeLabel">What do you need help with?</span><input name="purpose" maxlength="120" required></label>
+                </div>
+                <p class="agent-demo-safety-note" data-i18n="agentDemoPrivacyNote">Do not enter Aadhaar numbers, passwords, bank details, or real OTPs.</p>
+                <button id="agent-demo-begin" class="primary-button" type="submit" data-i18n="agentDemoBegin">Let Saathi fill the demo form</button>
+              </form>
+            </section>
+            <section id="agent-demo-output" class="agent-demo-output" hidden aria-labelledby="agent-demo-form-title">
+              <div class="virtual-portal-heading"><div><p class="eyebrow" data-i18n="agentDemoSandboxBadge">LOCAL SIMULATION</p><h3 id="agent-demo-form-title" data-i18n="agentDemoFormTitle">Virtual application form</h3></div><span class="demo-only-stamp">DEMO ONLY</span></div>
+              <p class="agent-demo-form-intro" data-i18n="agentDemoFormIntro">Saathi is transferring the details you entered into this virtual form.</p>
+              <progress id="agent-demo-progress" max="9" value="0" data-i18n-aria-label="agentDemoProgressLabel" aria-label="Application form progress"></progress>
+              <div class="agent-demo-fields">
+                <label><span data-i18n="agentDemoApplicantLabel">Applicant name</span><input data-agent-field="applicant" readonly></label>
+                <label><span data-i18n="agentDemoStateLabel">State</span><input data-agent-field="state" readonly></label>
+                <label><span data-i18n="agentDemoDistrictLabel">District</span><input data-agent-field="district" readonly></label>
+                <label><span data-i18n="agentDemoOccupationLabel">Occupation</span><input data-agent-field="occupation" readonly></label>
+                <label><span data-i18n="ageLabel">Age</span><input data-agent-field="age" readonly></label>
+                <label><span data-i18n="genderLabel">Applicant</span><input data-agent-field="gender" readonly></label>
+                <label><span data-i18n="agentDemoIncomeLabel">Annual household income</span><input data-agent-field="annualIncome" readonly></label>
+                <label><span data-i18n="agentDemoSchemeLabel">Scheme</span><input data-agent-field="scheme" readonly></label>
+                <label class="agent-demo-wide-field"><span data-i18n="agentDemoPurposeLabel">Purpose</span><input data-agent-field="purpose" readonly></label>
+              </div>
+              <section id="agent-demo-eligibility" class="agent-demo-eligibility" hidden aria-live="polite">
+                <h4 id="agent-demo-eligibility-title"></h4>
+                <p id="agent-demo-eligibility-message"></p>
+                <ul id="agent-demo-eligibility-fields"></ul>
+                <button id="agent-demo-edit-details" class="text-button" type="button" data-i18n="agentDemoEditDetails">Edit details</button>
+              </section>
+              <div id="agent-demo-document" class="agent-demo-document" hidden>
+                <span class="agent-demo-document-icon" aria-hidden="true">PDF</span><div><strong data-i18n="agentDemoDocumentTitle">Sample supporting document</strong><p data-i18n="agentDemoDocumentText">Sample document — DEMO ONLY. Simulated; no file uploaded.</p></div><span class="demo-only-stamp" data-i18n="agentDemoSimulated">SIMULATED</span>
+              </div>
+              <section id="agent-demo-verification" class="agent-demo-verification" hidden aria-labelledby="agent-demo-verification-title">
+                <p class="eyebrow" data-i18n="agentDemoGateEyebrow">FINAL DEMO STEP</p><h3 id="agent-demo-verification-title" data-i18n="agentDemoGateTitle">Demo verification gate</h3>
+                <p data-i18n="agentDemoGateText">This is only a demo check. It is not connected to a government portal.</p>
+                <p class="agent-demo-otp-hint"><strong data-i18n="agentDemoOtpHint">Demo OTP:</strong> <span data-i18n="agentDemoOtpHintText">enter any six digits</span></p>
+                <form id="agent-demo-form">
+                  <div class="agent-demo-fields verification-fields">
+                    <label><span data-i18n="agentDemoOtpLabel">Test OTP</span><input id="agent-demo-otp" inputmode="numeric" autocomplete="off" maxlength="6" pattern="[0-9]{6}" aria-describedby="agent-demo-otp-help"></label>
+                    <label><span data-i18n="agentDemoCaptchaLabel">Demo code</span><input id="agent-demo-captcha" autocomplete="off" aria-describedby="agent-demo-captcha-help"></label>
+                  </div>
+                  <p id="agent-demo-otp-help" class="agent-demo-help" data-i18n="agentDemoOtpHelp">Any six digits work in this demo.</p>
+                  <p id="agent-demo-captcha-help" class="agent-demo-help"><span data-i18n="agentDemoCaptchaHelp">Type the displayed code:</span></p>
+                  <div class="demo-captcha-row"><code id="agent-demo-captcha-code" aria-live="polite">-----</code><button id="refresh-agent-demo-captcha" class="icon-button" type="button" data-i18n-aria-label="agentDemoRefreshCode" aria-label="Refresh demo code" title="Refresh demo code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 6l2 2M4 16l2 2a7 7 0 0 0 12.5-3"/></svg></button></div>
+                  <button id="submit-agent-demo" class="primary-button" type="submit" disabled data-i18n="agentDemoSubmit">Submit demo application</button>
+                </form>
+              </section>
+              <div id="agent-demo-modal-receipt" class="agent-demo-modal-receipt" hidden></div>
+              <p class="agent-demo-safety-note" data-i18n="agentDemoSafetyNote">Demo only. No real application was sent.</p>
+            </section>
+          </section>
+        </div>
+      </div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
