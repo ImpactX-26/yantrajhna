@@ -1,0 +1,387 @@
+[
+  {
+    "id": "pm-kisan",
+    "name": "PM-KISAN Samman Nidhi",
+    "localNames": {
+      "hi": "पीएम-किसान सम्मान निधि",
+      "mr": "पीएम-किसान सन्मान निधी"
+    },
+    "category": "agriculture",
+    "categoryLabel": "Agriculture",
+    "badge": "Direct income support",
+    "benefit": "₹6,000 a year in three instalments for eligible landholding farmer families.",
+    "eligibility": [
+      "A landholding farmer family identified by the State or Union Territory administration.",
+      "Some higher-income, public-office, government-service, pension, and professional categories are excluded.",
+      "Aadhaar eKYC is mandatory for registered beneficiaries."
+    ],
+    "documents": [
+      "Aadhaar for eKYC",
+      "Landholding records used by the State or Union Territory",
+      "Bank account details for direct benefit transfer"
+    ],
+    "applicationMethod": "Register on the official PM-KISAN portal or get help from a Common Service Centre (CSC). The State or Union Territory verifies the application.",
+    "steps": [
+      "Check your state land records and the PM-KISAN eligibility exclusions.",
+      "Open New Farmer Registration on the official portal, or ask a CSC to help.",
+      "Complete Aadhaar authentication and enter the requested land and bank details.",
+      "Track the application and eKYC status on the official portal."
+    ],
+    "helpline": {
+      "label": "PM-KISAN Helpdesk",
+      "phone": "",
+      "url": "https://pmkisan.gov.in/Grievance.aspx",
+      "note": "Use the official query form or contact your State or District Nodal Officer."
+    },
+    "officialUrl": "https://pmkisan.gov.in/",
+    "sourceUrl": "https://pmkisan.gov.in/",
+    "stateAvailability": "Central scheme; State and Union Territory administrations verify eligible farmer families.",
+    "complexity": "Moderate",
+    "lastReviewed": "2026-09-29",
+    "rules": {
+      "all": [
+        { "field": "occupation", "op": "eq", "value": "farmer", "label": "You identify as a farmer" },
+        { "field": "cultivableLand", "op": "eq", "value": "yes", "label": "Your farmer family holds cultivable land" }
+      ],
+      "exclude": [
+        { "field": "incomeTaxPayer", "op": "eq", "value": "yes", "label": "Someone in the farmer family paid income tax in the last assessment year" },
+        { "field": "publicEmployment", "op": "eq", "value": "regular", "label": "A farmer family member is a serving or retired government employee (some exceptions apply)" },
+        { "field": "monthlyPension", "op": "eq", "value": "over-10000", "label": "A covered retired pensioner receives a monthly pension of ₹10,000 or more" },
+        { "field": "registeredProfessional", "op": "eq", "value": "yes", "label": "A farmer family member is a practising registered professional" },
+        { "field": "institutionalLand", "op": "eq", "value": "yes", "label": "The landholder is an institution" }
+      ]
+    }
+  },
+  {
+    "id": "ujjwala",
+    "name": "Pradhan Mantri Ujjwala Yojana",
+    "localNames": {
+      "hi": "प्रधानमंत्री उज्ज्वला योजना",
+      "mr": "प्रधानमंत्री उज्ज्वला योजना"
+    },
+    "category": "women",
+    "categoryLabel": "Women & family",
+    "badge": "Clean cooking fuel",
+    "benefit": "A deposit-free LPG connection for an eligible adult woman, with the first refill and stove included under current scheme terms.",
+    "eligibility": [
+      "The applicant is a woman aged 18 or older.",
+      "The household is declared poor under the prescribed process.",
+      "No other LPG connection is registered in the household."
+    ],
+    "documents": [
+      "Applicant's Aadhaar and completed KYC form",
+      "Ration card or State document showing family composition",
+      "Aadhaar details for adult family members listed in that document",
+      "Bank account details",
+      "Deprivation declaration; address proof if the current address differs"
+    ],
+    "applicationMethod": "Apply online through the official portal or submit the application to an LPG distributor of your choice.",
+    "steps": [
+      "Confirm that the applicant is at least 18 and that the household has no LPG connection.",
+      "Gather KYC, family-composition, Aadhaar, bank, and deprivation-declaration details.",
+      "Apply through the official PMUY portal or visit an LPG distributor.",
+      "Complete any verification requested by the distributor and keep the acknowledgement."
+    ],
+    "helpline": {
+      "label": "Ujjwala Helpline",
+      "phone": "14438",
+      "url": "https://www.pmuy.gov.in/",
+      "note": "The official portal also lists 14428 as a toll-free helpline."
+    },
+    "officialUrl": "https://www.pmuy.gov.in/ujjwala2.html",
+    "sourceUrl": "https://www.pmuy.gov.in/ujjwala2.html",
+    "stateAvailability": "Central scheme; applications are processed through participating LPG distributors across India.",
+    "complexity": "Moderate",
+    "lastReviewed": "2026-09-29",
+    "rules": {
+      "all": [
+        { "field": "gender", "op": "eq", "value": "woman", "label": "The applicant is a woman" },
+        { "field": "age", "op": "gte", "value": 18, "label": "The applicant is at least 18 years old" },
+        { "field": "poorHousehold", "op": "eq", "value": "yes", "label": "The household meets the poor-household declaration criteria" },
+        { "field": "householdLpg", "op": "eq", "value": "no", "label": "There is no other LPG connection in the household" }
+      ],
+      "exclude": []
+    }
+  },
+  {
+    "id": "pmjay-senior",
+    "name": "Ayushman Bharat PM-JAY for people aged 70+",
+    "localNames": {
+      "hi": "आयुष्मान भारत पीएम-जय (70 वर्ष और उससे अधिक)",
+      "mr": "आयुष्मान भारत पीएम-जय (70 वर्षे आणि त्यावरील)"
+    },
+    "category": "health",
+    "categoryLabel": "Health",
+    "badge": "Health cover",
+    "benefit": "Eligible people aged 70 or above can receive health cover up to ₹5 lakh a year, regardless of income.",
+    "eligibility": [
+      "For the senior-citizen expansion, the person must be 70 or older; Aadhaar-recorded age is used.",
+      "People below 70 may qualify through other PM-JAY beneficiary criteria that this prototype does not screen."
+    ],
+    "documents": [
+      "For the 70+ enrolment route, Aadhaar is the only document listed by the National Health Authority."
+    ],
+    "applicationMethod": "Use the National Health Authority beneficiary portal or Ayushman App, or ask a CSC or empanelled hospital for help.",
+    "steps": [
+      "Check the date of birth recorded in Aadhaar.",
+      "Open the official beneficiary portal or Ayushman App and complete Aadhaar-based eKYC.",
+      "Download or collect the Ayushman card after enrolment.",
+      "Call 14555 to confirm nearby empanelled hospitals or ask for help."
+    ],
+    "helpline": {
+      "label": "PM-JAY Helpline",
+      "phone": "14555",
+      "url": "https://nha.gov.in/",
+      "note": "National Health Authority toll-free helpline."
+    },
+    "officialUrl": "https://beneficiary.nha.gov.in/",
+    "sourceUrl": "https://nha.gov.in/img/resources/English_FAQs_related_to_the_benefits_for_senior_citizens.pdf",
+    "stateAvailability": "National scheme; implementation and available empanelled providers vary by State or Union Territory.",
+    "complexity": "Simple",
+    "lastReviewed": "2026-09-29",
+    "rules": {
+      "all": [],
+      "any": [
+        { "field": "age", "op": "gte", "value": 70, "label": "The applicant is at least 70 years old" },
+        { "field": "pmjayListed", "op": "eq", "value": "yes", "label": "The household appears in another PM-JAY beneficiary list" }
+      ],
+      "exclude": [],
+      "ifNoMatch": "Needs confirmation: people below 70 may qualify under other PM-JAY beneficiary criteria."
+    }
+  },
+  {
+    "id": "pmfby",
+    "name": "Pradhan Mantri Fasal Bima Yojana",
+    "localNames": { "hi": "प्रधानमंत्री फसल बीमा योजना", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಫಸಲ್ ಬಿಮಾ ಯೋಜನೆ" },
+    "category": "agriculture", "categoryLabel": "Agriculture", "badge": "Crop insurance",
+    "benefit": "Crop insurance support for farmers against notified crop losses and risks, subject to the season and local notifications.",
+    "eligibility": ["The crop and area must be notified for the relevant season.", "Enrollment route and dates vary by State, crop, and season."],
+    "documents": ["Confirm current crop and area notification", "Land or cultivation record requested for the season", "Bank details and identity proof as required by the official enrollment route"],
+    "applicationMethod": "Check the official PMFBY portal and your State's current enrollment route. Karnataka uses its State portal for direct enrollment.",
+    "steps": ["Check whether your crop and area are notified for this season.", "Confirm the local application deadline and premium.", "Apply through the official portal, bank, or State route listed for your area.", "Report crop loss through the official channel within the required time."],
+    "helpline": { "label": "Krishi Rakshak Portal & Helpline", "phone": "14447", "url": "https://pmfby.gov.in/", "note": "Use the official portal to report crop loss or raise a grievance." },
+    "officialUrl": "https://pmfby.gov.in/", "sourceUrl": "https://pmfby.gov.in/faq", "stateAvailability": "Central scheme; notified crops, enrollment routes, deadlines, and implementation are season- and State-specific.", "complexity": "Seasonal", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "occupation", "op": "eq", "value": "farmer", "label": "You identify as a farmer" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Crop notification, land or cultivation status, and the current season's enrollment window need official confirmation." }
+  },
+  {
+    "id": "pm-kmy", "name": "Pradhan Mantri Kisan Maandhan Yojana",
+    "localNames": { "hi": "प्रधानमंत्री किसान मानधन योजना", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಕಿಸಾನ್ ಮಾನ್‌ಧನ್ ಯೋಜನೆ" },
+    "category": "agriculture", "categoryLabel": "Agriculture", "badge": "Voluntary farmer pension",
+    "benefit": "A voluntary contributory pension scheme for eligible small and marginal farmers, with an assured pension of ₹3,000 per month from age 60, subject to scheme conditions.",
+    "eligibility": ["Entry age is 18 to 40.", "Small or marginal farmer with cultivable landholding up to 2 hectares as recorded by the State or UT.", "Exclusions apply, including some other statutory social-security coverage."],
+    "documents": ["State landholding record", "Age proof requested by the enrollment centre", "Bank account details requested for contributions"],
+    "applicationMethod": "Visit a Common Service Centre or check the PM-KISAN official portal for current PM-KMY enrollment guidance.",
+    "steps": ["Confirm age and landholding details in State records.", "Ask a CSC to check the exclusions and monthly contribution for your age.", "Review the voluntary contribution terms before enrolling.", "Keep the registration acknowledgement."],
+    "helpline": { "label": "PM-KISAN Helpdesk", "phone": "", "url": "https://pmkisan.gov.in/", "note": "Ask the official portal or a CSC about PM-KMY enrollment." },
+    "officialUrl": "https://pmkisan.gov.in/", "sourceUrl": "https://fw.pmkisan.gov.in/Documents/PMKMYFAQs.pdf", "stateAvailability": "Central scheme; State land records and exclusions apply.", "complexity": "Moderate", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "occupation", "op": "eq", "value": "farmer", "label": "You identify as a farmer" }, { "field": "age", "op": "gte", "value": 18, "label": "You are at least 18" }, { "field": "age", "op": "lte", "value": 40, "label": "You are no older than 40 at entry" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Landholding size and scheme exclusions still need checking with the official enrollment centre." }
+  },
+  {
+    "id": "pmay-g", "name": "Pradhan Mantri Awaas Yojana - Gramin",
+    "localNames": { "hi": "प्रधानमंत्री आवास योजना - ग्रामीण", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಆವಾಸ್ ಯೋಜನೆ - ಗ್ರಾಮೀಣ" },
+    "category": "housing", "categoryLabel": "Housing", "badge": "Rural housing assistance",
+    "benefit": "Housing assistance for eligible rural households identified through the scheme's official survey and verification process.",
+    "eligibility": ["The household must meet the applicable rural housing deprivation and exclusion criteria.", "Selection and verification are handled through the official rural survey and local administration."],
+    "documents": ["Awaas+ survey or beneficiary reference, if available", "Household and residence details requested by the Gram Panchayat", "Bank details only through the official verification process"],
+    "applicationMethod": "Check the official PMAY-G portal or ask the Gram Panchayat about the current Awaas+ survey and beneficiary list.",
+    "steps": ["Ask the Gram Panchayat whether your household is included in the current survey/list.", "Complete an official self-survey or assisted survey only when the State process is open.", "Have the local verification team review the household details.", "Use the official portal to check status."],
+    "helpline": { "label": "PMAY-G portal", "phone": "", "url": "https://pmayg.dord.gov.in/", "note": "The Gram Panchayat and Block office can explain the State survey process." },
+    "officialUrl": "https://pmayg.dord.gov.in/", "sourceUrl": "https://pmayg.nic.in/netiayHome/questions.html", "stateAvailability": "Central scheme implemented with States and UTs; the current survey/list and local verification determine access.", "complexity": "Local verification", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "ruralResidence", "op": "eq", "value": "yes", "label": "Your household lives in a rural area" }, { "field": "pmaygSurveyListed", "op": "eq", "value": "yes", "label": "Your household is included in the official PMAY-G survey or list" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The current survey/list, housing conditions, and local exclusion checks must still be confirmed with the Gram Panchayat." }
+  },
+  {
+    "id": "pmay-u2", "name": "Pradhan Mantri Awas Yojana - Urban 2.0",
+    "localNames": { "hi": "प्रधानमंत्री आवास योजना - शहरी 2.0", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಆವಾಸ್ ಯೋಜನೆ - ನಗರ 2.0" },
+    "category": "housing", "categoryLabel": "Housing", "badge": "Urban housing support",
+    "benefit": "Housing support through the PMAY-U 2.0 verticals for eligible urban households, subject to verification and current guidelines.",
+    "eligibility": ["Urban household eligibility depends on the selected vertical and household income band.", "A beneficiary family generally must not own a pucca house anywhere in India.", "State, ULB, lender, and scheme verification apply."],
+    "documents": ["Household and income proof requested by the selected vertical", "Residence and property details", "Bank or loan documents if applying through a credit-linked route"],
+    "applicationMethod": "Use the official PMAY-U 2.0 portal or contact your Urban Local Body for the applicable vertical.",
+    "steps": ["Check the PMAY-U 2.0 eligibility page and choose the relevant vertical.", "Confirm household income and home-ownership conditions.", "Submit details through the official portal or ULB.", "Wait for State, ULB, lender, or agency verification."],
+    "helpline": { "label": "PMAY-U portal", "phone": "", "url": "https://pmay-urban.gov.in/", "note": "Ask your Urban Local Body which PMAY-U 2.0 route is open." },
+    "officialUrl": "https://pmaymis.gov.in/pmaymis2_2024/PMAY_SURVEY/EligiblityCheck.aspx", "sourceUrl": "https://pmay-urban.gov.in/about", "stateAvailability": "Urban scheme; selected vertical, local implementation, income, and household conditions apply.", "complexity": "Local verification", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "urbanResidence", "op": "eq", "value": "yes", "label": "Your household lives in an urban area" }, { "field": "puccaHouse", "op": "eq", "value": "no", "label": "Your family does not own a pucca house in India" }, { "field": "annualIncome", "op": "lte", "value": 900000, "label": "Your household income is within the listed PMAY-U 2.0 bands" }, { "field": "recentHousingBenefit", "op": "eq", "value": "no", "label": "No government housing benefit was allotted to your family in the last 20 years" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The selected PMAY-U 2.0 vertical, income band, and State/ULB verification must still be confirmed." }
+  },
+  {
+    "id": "pm-svanidhi", "name": "PM Street Vendor's AtmaNirbhar Nidhi",
+    "localNames": { "hi": "पीएम स्वनिधि", "kn": "ಪಿಎಂ ಸ್ವನಿಧಿ" },
+    "category": "employment", "categoryLabel": "Employment", "badge": "Street-vendor working capital",
+    "benefit": "Collateral-free working-capital loans in progressive tranches for eligible street vendors; loan amounts, terms, and availability are governed by current guidelines and lender assessment.",
+    "eligibility": ["For eligible street vendors identified under the scheme's process.", "Vendor identification, certificate/letter, and lender checks apply.", "A loan is repayable; approval is not guaranteed."],
+    "documents": ["Certificate of Vending or Letter of Recommendation, if applicable", "Identity and bank details requested by the lender", "Vendor or ULB records requested during verification"],
+    "applicationMethod": "Apply through the official PM SVANidhi portal or an authorized lending institution/urban local body.",
+    "steps": ["Check whether your vendor record is available with the ULB.", "Ask about a Certificate of Vending or Letter of Recommendation if needed.", "Apply through the official portal or authorized lender.", "Review repayment terms before accepting a loan."],
+    "helpline": { "label": "PM SVANidhi portal", "phone": "", "url": "https://pmsvanidhi.mohua.gov.in/", "note": "Contact your ULB or the portal for current vendor identification requirements." },
+    "officialUrl": "https://pmsvanidhi.mohua.gov.in/", "sourceUrl": "https://www.pib.gov.in/FaqDetails.aspx?ModuleId=4&NoteId=158727&id=158727&lang=1&reg=37", "stateAvailability": "Central scheme for eligible street vendors; ULB verification and lender assessment apply.", "complexity": "Lender review", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "occupation", "op": "eq", "value": "street-vendor", "label": "You work as a street vendor" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Vendor identification by the Urban Local Body and lender checks need confirmation." }
+  },
+  {
+    "id": "pm-vishwakarma", "name": "PM Vishwakarma",
+    "localNames": { "hi": "पीएम विश्वकर्मा", "kn": "ಪಿಎಂ ವಿಶ್ವಕರ್ಮ" },
+    "category": "employment", "categoryLabel": "Employment", "badge": "Traditional artisan support",
+    "benefit": "End-to-end support for artisans in 18 listed traditional trades, including skills, toolkit incentive, credit, and market support under scheme conditions.",
+    "eligibility": ["Applicant is 18 or older and actively works with hands and tools in one of the 18 listed trades.", "Self-employed, unorganized-sector artisan; one beneficiary per family.", "Government service and certain recent similar loans can affect eligibility."],
+    "documents": ["Trade and household details for CSC verification", "Identity verification required by the official portal", "Prior loan details, if any"],
+    "applicationMethod": "Registration is assisted through a Common Service Centre using the official PM Vishwakarma portal.",
+    "steps": ["Check that your trade is one of the listed 18 trades.", "Visit a CSC for assisted registration and verification.", "Complete the required verification and trade assessment.", "Review training and credit terms before accepting them."],
+    "helpline": { "label": "PM Vishwakarma portal", "phone": "", "url": "https://pmvishwakarma.gov.in/", "note": "Use the official portal or a CSC for registration guidance." },
+    "officialUrl": "https://pmvishwakarma.gov.in/", "sourceUrl": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=1959098&lang=2&reg=48", "stateAvailability": "Central scheme available through CSC-assisted registration; trade and exclusion checks apply.", "complexity": "Assisted registration", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "age", "op": "gte", "value": 18, "label": "You are at least 18" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Your trade, work status, family registration, and similar-loan history need official verification." }
+  },
+  {
+    "id": "pmmvy", "name": "Pradhan Mantri Matru Vandana Yojana",
+    "localNames": { "hi": "प्रधानमंत्री मातृ वंदना योजना", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಮಾತೃ ವಂದನಾ ಯೋಜನೆ" },
+    "category": "women", "categoryLabel": "Women & family", "badge": "Maternity benefit",
+    "benefit": "Cash maternity benefit for eligible pregnant and lactating women; the amount and route depend on the child and current PMMVY rules.",
+    "eligibility": ["Targeted to women in specified socially and economically disadvantaged groups.", "Benefit rules differ for first child and second child (when the second child is a girl).", "Application timing and exclusions apply."],
+    "documents": ["Pregnancy/childbirth and beneficiary details requested by the Anganwadi/ASHA worker", "Bank or post-office account details as required for DBT", "Category or eligibility proof requested by the official process"],
+    "applicationMethod": "An eligible person can ask an Anganwadi or ASHA worker for online registration through the official PMMVY portal.",
+    "steps": ["Contact your Anganwadi or ASHA worker.", "Ask which PMMVY benefit route applies to your child and situation.", "Complete the official application and verification.", "Check application status with the field worker or portal."],
+    "helpline": { "label": "PMMVY portal", "phone": "", "url": "https://pmmvy.wcd.gov.in/", "note": "Anganwadi and ASHA workers can assist with online registration." },
+    "officialUrl": "https://pmmvy.wcd.gov.in/", "sourceUrl": "https://www.wcd.gov.in/offerings/pradhan-mantri-matru-vandana-yojana", "stateAvailability": "Nationwide scheme; beneficiary category, child order, deadlines, and State implementation apply.", "complexity": "Assisted application", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "gender", "op": "eq", "value": "woman", "label": "The applicant is a woman" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Pregnancy, beneficiary category, child order, and application timing need confirmation with an Anganwadi/ASHA worker." }
+  },
+  {
+    "id": "pmjay", "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
+    "localNames": { "hi": "आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना", "kn": "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ - ಪ್ರಧಾನ ಮಂತ್ರಿ ಜನ ಆರೋಗ್ಯ ಯೋಜನೆ" },
+    "category": "health", "categoryLabel": "Health", "badge": "Hospital health cover",
+    "benefit": "Cashless secondary and tertiary hospitalization cover up to ₹5 lakh per eligible family per year at empanelled hospitals; eligibility is based on official beneficiary criteria.",
+    "eligibility": ["Beneficiary status is determined by the official PM-JAY beneficiary system and applicable State rules.", "This catalog cannot establish inclusion in a beneficiary list."],
+    "documents": ["Check beneficiary status on the official NHA portal", "Use documents requested by an Ayushman Mitra or empanelled hospital"],
+    "applicationMethod": "Check beneficiary status on the National Health Authority portal or ask an Ayushman Mitra at an empanelled hospital.",
+    "steps": ["Check your beneficiary status on the official portal.", "If listed, complete the official identity/eKYC process.", "Ask an Ayushman Mitra about covered treatment and empanelled hospitals.", "Use the NHA helpline for help."],
+    "helpline": { "label": "PM-JAY helpline", "phone": "14555", "url": "https://nha.gov.in/", "note": "Call the official helpline or speak with an Ayushman Mitra." },
+    "officialUrl": "https://beneficiary.nha.gov.in/", "sourceUrl": "https://nha.gov.in/", "stateAvailability": "National framework; State Health Agency implementation and beneficiary lists apply.", "complexity": "Beneficiary lookup", "lastReviewed": "2026-10-01",
+    "rules": { "all": [], "any": [{ "field": "pmjayListed", "op": "eq", "value": "yes", "label": "Your household appears in the official PM-JAY beneficiary system" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Only the official beneficiary lookup and applicable State rules can confirm whether your household is listed." }
+  },
+  {
+    "id": "sc-post-matric", "name": "Post-Matric Scholarship for Scheduled Caste Students",
+    "localNames": { "hi": "अनुसूचित जाति के विद्यार्थियों के लिए पोस्ट-मैट्रिक छात्रवृत्ति", "kn": "ಪರಿಶಿಷ್ಟ ಜಾತಿ ವಿದ್ಯಾರ್ಥಿಗಳ ಮೆಟ್ರಿಕ್ ನಂತರದ ವಿದ್ಯಾರ್ಥಿವೇತನ" },
+    "category": "education", "categoryLabel": "Education", "badge": "Post-secondary education support",
+    "benefit": "Financial assistance for eligible Scheduled Caste students studying at post-matriculation or post-secondary level.",
+    "eligibility": ["Applicant must meet the notified Scheduled Caste and course requirements.", "Income ceiling and other conditions are set by current scheme rules and the State/UT.", "Application may use the National Scholarship Portal or a designated State portal."],
+    "documents": ["Caste certificate", "Current course and institution details", "Income and bank details requested by the application portal", "Previous academic details, if requested"],
+    "applicationMethod": "Check the current scheme listing on the National Scholarship Portal and your State/UT scholarship portal.",
+    "steps": ["Confirm the scheme is open for your course and academic year.", "Ask your institution which portal and verification route to use.", "Submit the application and required proofs on the official portal.", "Track institute and department verification."],
+    "helpline": { "label": "National Scholarship Portal", "phone": "", "url": "https://scholarships.gov.in/", "note": "Your institution and State scholarship office can help with application checks." },
+    "officialUrl": "https://scholarships.gov.in/All-Scholarships", "sourceUrl": "https://socialjustice.gov.in/", "stateAvailability": "Centrally sponsored scheme implemented through States/UTs; income ceiling, open dates, and process can vary.", "complexity": "Institution verification", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "educationLevel", "op": "eq", "value": "post-matric", "label": "You are studying at post-matriculation level" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Caste, course, income conditions, open dates, and the correct State/NSP portal need confirmation." }
+  },
+  {
+    "id": "pmkvy", "name": "Pradhan Mantri Kaushal Vikas Yojana 4.0",
+    "localNames": { "hi": "प्रधानमंत्री कौशल विकास योजना 4.0", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಕೌಶಲ್ಯ ವಿಕಾಸ ಯೋಜನೆ 4.0" },
+    "category": "education", "categoryLabel": "Education & skills", "badge": "Skill training",
+    "benefit": "Industry-linked skill training and certification opportunities through approved courses and training partners; availability depends on current course offerings.",
+    "eligibility": ["Course-specific age, education, and entry conditions apply.", "Training places and approved courses depend on current implementation and local providers."],
+    "documents": ["Basic identity and education details requested by the course provider", "Any course-specific prerequisites listed on the official portal"],
+    "applicationMethod": "Search current courses on Skill India Digital Hub and apply through the listed training provider.",
+    "steps": ["Search for an approved course on Skill India Digital Hub.", "Check eligibility, location, schedule, and course terms.", "Register using the official platform or listed provider.", "Complete training and any required assessment."],
+    "helpline": { "label": "Skill India Digital Hub", "phone": "", "url": "https://www.skillindiadigital.gov.in/", "note": "Use the platform's support route for course and enrollment questions." },
+    "officialUrl": "https://www.skillindiadigital.gov.in/", "sourceUrl": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2298230&lang=1&reg=1", "stateAvailability": "Course availability and entry requirements vary by approved training provider and location.", "complexity": "Course enrollment", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "pmkvyTrainingType", "op": "oneOf", "value": ["stt", "special", "rpl"], "label": "You selected an available PMKVY 4.0 training route" }, { "field": "age", "op": "pmkvyAge", "value": true, "label": "Your age fits the selected PMKVY 4.0 training route" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The approved course, job-role prerequisites, provider availability, and current enrollment window need confirmation." }
+  },
+  {
+    "id": "surya-ghar", "name": "PM Surya Ghar: Muft Bijli Yojana",
+    "localNames": { "hi": "पीएम सूर्य घर: मुफ्त बिजली योजना", "kn": "ಪಿಎಂ ಸೂರ್ಯ ಘರ್: ಉಚಿತ ವಿದ್ಯುತ್ ಯೋಜನೆ" },
+    "category": "housing", "categoryLabel": "Home & energy", "badge": "Rooftop solar support",
+    "benefit": "Central financial assistance is available for eligible residential consumers installing rooftop solar under current guidelines.",
+    "eligibility": ["Residential electricity consumer with a grid-connected connection to the local DISCOM.", "System and vendor requirements and current CFA rules apply.", "Commercial and government consumers are not eligible for the residential CFA route."],
+    "documents": ["Consumer number and electricity bill details", "Residential connection details", "Bank details requested by the official portal"],
+    "applicationMethod": "Apply on the official National Portal and follow the DISCOM/vendor steps shown there.",
+    "steps": ["Register on the National Portal using your DISCOM consumer details.", "Choose a registered vendor listed on the portal.", "Complete installation and DISCOM inspection as directed.", "Submit bank details through the official portal for applicable assistance."],
+    "helpline": { "label": "PM Surya Ghar portal", "phone": "", "url": "https://pmsuryaghar.gov.in/", "note": "Use the portal to check DISCOM and registered-vendor instructions." },
+    "officialUrl": "https://pmsuryaghar.gov.in/", "sourceUrl": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2290402&lang=1&reg=3", "stateAvailability": "Nationwide demand-driven scheme; DISCOM, connection, installation, and current portal conditions apply.", "complexity": "DISCOM coordination", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "residentialElectricity", "op": "eq", "value": "yes", "label": "You have a residential electricity connection with a DISCOM" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The DISCOM, installation, vendor, and current subsidy conditions need confirmation on the official portal." }
+  },
+  {
+    "id": "pmjdy", "name": "Pradhan Mantri Jan-Dhan Yojana",
+    "localNames": { "hi": "प्रधानमंत्री जन-धन योजना", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಜನ-ಧನ್ ಯೋಜನೆ" },
+    "category": "finance", "categoryLabel": "Financial inclusion", "badge": "Basic bank account",
+    "benefit": "Access to a basic savings bank deposit account for an unbanked person, with associated banking services subject to account and card terms.",
+    "eligibility": ["The basic PMJDY account is intended for a person who does not already have another bank account.", "Insurance and overdraft benefits have separate account, card, and eligibility conditions."],
+    "documents": ["Identity and address documents accepted under current bank KYC rules", "Additional documents requested by the bank or Bank Mitra"],
+    "applicationMethod": "Visit a bank branch or authorized Bank Mitra and ask to open a PMJDY basic savings account.",
+    "steps": ["Check whether you already have a bank account.", "Visit a bank branch or Bank Mitra.", "Ask which KYC documents are accepted.", "Read the debit card, insurance, and overdraft conditions separately."],
+    "helpline": { "label": "PMJDY toll-free", "phone": "1800 11 0001", "url": "https://www.pmjdy.gov.in/", "note": "The official PMJDY portal lists toll-free numbers and bank guidance." },
+    "officialUrl": "https://www.pmjdy.gov.in/scheme-detail.aspx", "sourceUrl": "https://www.pmjdy.gov.in/scheme-detail.aspx", "stateAvailability": "Nationwide banking inclusion program; bank KYC rules and separate benefit conditions apply.", "complexity": "Bank-assisted", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "otherBankAccount", "op": "eq", "value": "no", "label": "You do not already have another bank account" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "A bank or Bank Mitra must confirm account status, accepted KYC, and any linked benefit conditions." }
+  },
+  {
+    "id": "apy", "name": "Atal Pension Yojana",
+    "localNames": { "hi": "अटल पेंशन योजना", "kn": "ಅಟಲ್ ಪಿಂಚಣಿ ಯೋಜನೆ" },
+    "category": "senior", "categoryLabel": "Pension & savings", "badge": "Pension savings",
+    "benefit": "A defined minimum monthly pension from age 60, based on the chosen pension amount and contributions.",
+    "eligibility": ["Indian citizen aged 18 to 40 at enrollment.", "A savings bank or post-office savings account is required.", "Contribution depends on age at joining and selected pension."],
+    "documents": ["Savings bank or post-office account details", "Identity details requested by the bank/post office"],
+    "applicationMethod": "Enroll through a participating bank or post-office savings account channel.",
+    "steps": ["Check your age and bank/post-office account.", "Ask the bank about contribution amounts for the pension option you choose.", "Review auto-debit and exit conditions before joining.", "Keep the enrollment confirmation."],
+    "helpline": { "label": "Department of Financial Services", "phone": "", "url": "https://financialservices.gov.in/atal-pension-yojana", "note": "Ask your bank or post office about enrollment and contribution schedules." },
+    "officialUrl": "https://financialservices.gov.in/atal-pension-yojana", "sourceUrl": "https://financialservices.gov.in/atal-pension-yojana", "stateAvailability": "National pension scheme; account, enrollment, contribution, and tax-related rules must be checked with the bank.", "complexity": "Bank-assisted", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "age", "op": "gte", "value": 18, "label": "You are at least 18" }, { "field": "age", "op": "lte", "value": 40, "label": "You are no older than 40 at entry" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The bank must confirm account and current enrollment conditions before joining." }
+  },
+  {
+    "id": "pmmy", "name": "Pradhan Mantri MUDRA Yojana",
+    "localNames": { "hi": "प्रधानमंत्री मुद्रा योजना", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಮುದ್ರಾ ಯೋಜನೆ" },
+    "category": "finance", "categoryLabel": "Financial assistance", "badge": "Small-business credit",
+    "benefit": "Collateral-free institutional credit for eligible income-generating micro-enterprises; the lender assesses the proposal and repayment capacity.",
+    "eligibility": ["For eligible small-business activities in manufacturing, trading, services, and allied agriculture.", "Loan categories and limits depend on current rules; Tarun Plus requires successful repayment of a prior Tarun loan.", "A loan is repayable and approval is not guaranteed."],
+    "documents": ["Business plan or activity details", "Identity and address documents requested by the lender", "Bank and business records requested for credit assessment"],
+    "applicationMethod": "Apply through a participating bank, NBFC, MFI, or an official Jan Samarth journey where available.",
+    "steps": ["Describe the income-generating activity and amount needed.", "Choose a participating lender or official application route.", "Submit the documents requested by the lender.", "Review interest, repayment schedule, and all terms before accepting."],
+    "helpline": { "label": "MUDRA", "phone": "", "url": "https://www.mudra.org.in/", "note": "Contact a participating lender for current loan products and terms." },
+    "officialUrl": "https://financialservices.gov.in/pradhan-mantri-mudra-yojana-pmmy", "sourceUrl": "https://financialservices.gov.in/pradhan-mantri-mudra-yojana-pmmy", "stateAvailability": "Delivered through participating lending institutions; loan approval and terms are lender decisions.", "complexity": "Lender review", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "businessActivity", "op": "eq", "value": "yes", "label": "You need credit for an income-generating small business or allied activity" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The lender must assess the eligible activity, documents, repayment ability, and current loan category." }
+  },
+  {
+    "id": "ignoaps", "name": "Indira Gandhi National Old Age Pension Scheme",
+    "localNames": { "hi": "इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना", "kn": "ಇಂದಿರಾ ಗಾಂಧಿ ರಾಷ್ಟ್ರೀಯ ವೃದ್ಧಾಪ್ಯ ಪಿಂಚಣಿ ಯೋಜನೆ" },
+    "category": "senior", "categoryLabel": "Senior citizens", "badge": "Old-age pension",
+    "benefit": "Central pension assistance for eligible older people; State/UT top-ups and local rules can change the total amount received.",
+    "eligibility": ["Age 60 or older and belonging to an eligible Below Poverty Line household under central criteria.", "State/UT administration determines application process and may provide a top-up.", "The central share is ₹200/month for ages 60-79 and ₹500/month from age 80, as described by government sources."],
+    "documents": ["Age proof accepted by the local authority", "BPL or household eligibility proof", "Bank or post-office account details requested by the State/UT"],
+    "applicationMethod": "Apply through the designated State/UT social-welfare or pension office, local body, or official State portal.",
+    "steps": ["Contact your Gram Panchayat, municipality, or State social-welfare office.", "Ask which pension application and eligibility proofs your State requires.", "Submit the application through the official local route.", "Keep the acknowledgement and check status with the office."],
+    "helpline": { "label": "State pension office", "phone": "", "url": "https://nsap.nic.in/", "note": "NSAP is implemented by States/UTs; contact the local pension office." },
+    "officialUrl": "https://nsap.nic.in/", "sourceUrl": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2152593&lang=2&reg=3", "stateAvailability": "Central assistance administered by States/UTs; local eligibility and top-up vary.", "complexity": "Local application", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "age", "op": "gte", "value": 60, "label": "You are at least 60" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "BPL eligibility and the State/UT's application conditions need local confirmation." }
+  },
+  {
+    "id": "mgnrega", "name": "Mahatma Gandhi National Rural Employment Guarantee Scheme",
+    "localNames": { "hi": "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी योजना", "kn": "ಮಹಾತ್ಮ ಗಾಂಧಿ ರಾಷ್ಟ್ರೀಯ ಗ್ರಾಮೀಣ ಉದ್ಯೋಗ ಖಾತರಿ ಯೋಜನೆ" },
+    "category": "employment", "categoryLabel": "Employment", "badge": "Rural wage employment",
+    "benefit": "At least 100 days of wage employment in a financial year for a rural household whose adult members volunteer for unskilled manual work, subject to the Act and process.",
+    "eligibility": ["Rural household; adult members are willing to do unskilled manual work.", "Work is demand-driven and job-card and Gram Panchayat processes apply."],
+    "documents": ["Household and residence details for job-card application", "Details and photographs of adult household members requested by the Gram Panchayat"],
+    "applicationMethod": "Apply for a job card or demand work through the Gram Panchayat and official MGNREGA channels.",
+    "steps": ["Contact the Gram Panchayat about a household job card.", "Submit the required household and adult-member details.", "Demand work through the prescribed local process.", "Keep the job card and record work and payment details."],
+    "helpline": { "label": "MGNREGA portal", "phone": "", "url": "https://nrega.dord.gov.in/", "note": "Use the Gram Panchayat or official portal for job-card and work-demand details." },
+    "officialUrl": "https://nrega.dord.gov.in/", "sourceUrl": "https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=2080090&lang=2&reg=48", "stateAvailability": "Nationwide rural employment guarantee; State wage rates and local work availability apply.", "complexity": "Gram Panchayat", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "age", "op": "gte", "value": 18, "label": "You are an adult" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "Rural household residence, job-card status, and work demand must be confirmed with the Gram Panchayat." }
+  },
+  {
+    "id": "sukanya", "name": "Sukanya Samriddhi Account",
+    "localNames": { "hi": "सुकन्या समृद्धि खाता", "kn": "ಸುಕನ್ಯಾ ಸಮೃದ್ಧಿ ಖಾತೆ" },
+    "category": "women", "categoryLabel": "Women & family", "badge": "Girl-child savings",
+    "benefit": "A Government of India small-savings account for a girl child, operated under the current account scheme rules and interest notifications.",
+    "eligibility": ["Account-opening age and family limits are specified in the current scheme rules.", "Deposits, withdrawal, and maturity are governed by notified terms; this is a savings product, not a grant."],
+    "documents": ["Girl child's date-of-birth proof", "Guardian identity and address documents accepted by the post office or bank"],
+    "applicationMethod": "Ask a post office or authorized bank about opening a Sukanya Samriddhi Account.",
+    "steps": ["Check the latest account-opening rules and deposit limits.", "Visit a post office or authorized bank with accepted documents.", "Complete the account-opening form and first deposit.", "Keep the passbook and note deposit and withdrawal rules."],
+    "helpline": { "label": "India Post", "phone": "", "url": "https://www.indiapost.gov.in/VAS/pages/pmodashboard/sukanyasamriddhiaccount.aspx", "note": "Ask a post office about accepted documents and current account rules." },
+    "officialUrl": "https://www.indiapost.gov.in/VAS/pages/pmodashboard/sukanyasamriddhiaccount.aspx", "sourceUrl": "https://www.indiapost.gov.in/VAS/DOP_PDFFiles/Savings%20Bank/Sukanya%20Samriddhi%20Account%20Scheme%202019%20English.pdf", "stateAvailability": "Available through designated post offices and authorized banks under national small-savings rules.", "complexity": "Post-office/bank", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "girlChild", "op": "eq", "value": "yes", "label": "The account is for a girl child" }, { "field": "girlChildAge", "op": "lte", "value": 9, "label": "The girl child is under 10 years old" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The guardian, family account limit, birth proof, and current post-office or bank rules must still be confirmed." }
+  },
+  {
+    "id": "pmjjby", "name": "Pradhan Mantri Jeevan Jyoti Bima Yojana",
+    "localNames": { "hi": "प्रधानमंत्री जीवन ज्योति बीमा योजना", "kn": "ಪ್ರಧಾನ ಮಂತ್ರಿ ಜೀವನ ಜ್ಯೋತಿ ವಿಮಾ ಯೋಜನೆ" },
+    "category": "finance", "categoryLabel": "Financial protection", "badge": "Life insurance",
+    "benefit": "Renewable life insurance cover through participating banks, subject to enrollment, premium, age, and policy terms.",
+    "eligibility": ["The scheme is for eligible bank account holders within the notified entry-age range.", "Premium is auto-debited; coverage and exclusions are defined by current policy terms."],
+    "documents": ["Participating bank account details", "Consent and KYC information requested by the bank"],
+    "applicationMethod": "Enroll through a participating bank or its approved digital channel; read the current policy terms.",
+    "steps": ["Ask your bank if you are eligible to enroll.", "Review the annual premium, coverage, and exclusions.", "Give consent through the bank's official channel.", "Check that the premium debit and coverage status are active."],
+    "helpline": { "label": "Department of Financial Services", "phone": "", "url": "https://financialservices.gov.in/", "note": "Contact your participating bank for enrollment and claim details." },
+    "officialUrl": "https://financialservices.gov.in/", "sourceUrl": "https://www.pib.gov.in/FactsheetDetails.aspx?Id=150832&lang=10&reg=23", "stateAvailability": "National insurance scheme delivered through participating banks; current policy conditions apply.", "complexity": "Bank enrollment", "lastReviewed": "2026-10-01",
+    "rules": { "all": [{ "field": "age", "op": "gte", "value": 18, "label": "You are at least 18 years old" }, { "field": "age", "op": "lte", "value": 50, "label": "You are no older than 50 at enrollment" }, { "field": "bankAccount", "op": "eq", "value": "yes", "label": "You hold an account at a participating bank or post office" }], "exclude": [], "confirmationOnly": true, "ifNoMatch": "The participating bank/post office, consent, premium debit, and current policy terms must be confirmed." }
+  }
+]
