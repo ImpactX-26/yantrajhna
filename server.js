@@ -1,8 +1,10 @@
 import "dotenv/config";
 import express from "express";
+import { randomInt, randomUUID, timingSafeEqual } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { evaluateSchemeEligibility } from "./public/eligibility.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -41,67 +43,8 @@ function publicScheme(scheme) {
   return record;
 }
 
-function checkCondition(profile, condition) {
-  const actual = profile?.[condition.field];
-  if (actual === undefined || actual === null || actual === "" || actual === "unknown") return null;
-  if (condition.op === "gte") return Number(actual) >= Number(condition.value);
-  if (condition.op === "lte") return Number(actual) <= Number(condition.value);
-  if (condition.op === "oneOf") return condition.value.includes(actual);
-  return String(actual) === String(condition.value);
-}
-
 export function checkEligibility(profile = {}) {
-  return schemes.map((scheme) => {
-    const rules = scheme.rules || { all: [], exclude: [] };
-    const all = rules.all || [];
-    const exclusions = rules.exclude || [];
-    const any = rules.any || [];
-    const unmet = all.filter((condition) => checkCondition(profile, condition) === false).map((condition) => condition.label);
-    const missing = [
-      ...all.filter((condition) => checkCondition(profile, condition) === null).map((condition) => condition.label),
-      ...exclusions.filter((condition) => checkCondition(profile, condition) === null).map((condition) => `Confirm: ${condition.label}`)
-    ];
-    const triggered = exclusions.filter((condition) => checkCondition(profile, condition) === true).map((condition) => condition.label);
-    const anyMatched = any.some((condition) => checkCondition(profile, condition) === true);
-    const anyMissing = any.filter((condition) => checkCondition(profile, condition) === null).map((condition) => condition.label);
-
-    let status;
-    let explanation;
-    if (triggered.length) {
-      status = "unlikely";
-      explanation = "One or more answers match an exclusion listed in the scheme guidance.";
-    } else if (unmet.length) {
-      status = "unlikely";
-      explanation = "One or more known requirements do not match your answers.";
-    } else if (any.length && !anyMatched && anyMissing.length) {
-      status = "needs-information";
-      explanation = "A few details are still needed for a useful screening.";
-    } else if (any.length && !anyMatched) {
-      status = "needs-confirmation";
-      explanation = rules.ifNoMatch || "The available answers do not confirm a match. Check the official beneficiary list.";
-    } else if (missing.length) {
-      status = "needs-information";
-      explanation = "A few details are still needed for a useful screening.";
-    } else if (rules.confirmationOnly) {
-      status = "needs-confirmation";
-      explanation = rules.ifNoMatch || "Important scheme-specific conditions need confirmation with the official authority.";
-    } else {
-      status = "possible-match";
-      explanation = "Your answers match the criteria represented in this prototype. The scheme authority must confirm eligibility.";
-    }
-
-    return {
-      schemeId: scheme.id,
-      name: scheme.name,
-      status,
-      explanation,
-      matched: all.filter((condition) => checkCondition(profile, condition) === true).map((condition) => condition.label),
-      missing,
-      unmet,
-      triggered,
-      officialUrl: scheme.officialUrl
-    };
-  });
+  return schemes.map((scheme) => evaluateSchemeEligibility(scheme, profile));
 }
 
 export function searchSchemes(query = "", category = "") {
@@ -536,8 +479,105 @@ function limitAssistant(req, res, next) {
 
 const availableCategories = new Set(["agriculture", "education", "housing", "health", "employment", "women", "senior", "finance"]);
 const supportedLanguages = ["en", "hi", "kn"];
+const demoSessions = new Map();
+const demoChallenges = new Map();
+const demoUsername = "demo@sarkarisaathi.in";
+const demoPassword = "SaathiDemo26!";
+const demoSessionLifetime = 8 * 60 * 60 * 1000;
+const demoChallengeLifetime = 5 * 60 * 1000;
+
+function readDemoSession(req) {
+  const cookie = req.headers.cookie?.split(";").map((item) => item.trim()).find((item) => item.startsWith("sarkari_demo_session="));
+  const token = cookie?.slice("sarkari_demo_session=".length);
+  const session = token && demoSessions.get(token);
+  if (!session) return null;
+  if (session.expiresAt <= Date.now()) {
+    demoSessions.delete(token);
+    return null;
+  }
+  return { token, session };
+}
+
+function requireDemoSession(req, res, next) {
+  const current = readDemoSession(req);
+  if (!current) return res.status(401).json({ error: "Sign in to the demo first." });
+  req.demoSession = current;
+  next();
+}
+
+function clearExpiredChallenges() {
+  const now = Date.now();
+  for (const [id, challenge] of demoChallenges) {
+    if (challenge.expiresAt <= now) demoChallenges.delete(id);
+  }
+}
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, aiEnabled: Boolean(anthropicKey), mode: anthropicKey ? "claude" : "demo" }));
+app.get("/api/demo/session", (req, res) => res.set("Cache-Control", "no-store").json({ authenticated: Boolean(readDemoSession(req)) }));
+app.post("/api/demo/login", (req, res) => {
+  const username = typeof req.body?.username === "string" ? req.body.username.trim() : "";
+  const password = typeof req.body?.password === "string" ? req.body.password : "";
+  const userBytes = Buffer.from(username);
+  const expectedUserBytes = Buffer.from(demoUsername);
+  const passwordBytes = Buffer.from(password);
+  const expectedPasswordBytes = Buffer.from(demoPassword);
+  const userMatches = userBytes.length === expectedUserBytes.length && timingSafeEqual(userBytes, expectedUserBytes);
+  const passwordMatches = passwordBytes.length === expectedPasswordBytes.length && timingSafeEqual(passwordBytes, expectedPasswordBytes);
+  if (!userMatches || !passwordMatches) return res.status(401).json({ error: "The demo username or password is incorrect." });
+
+  const token = randomUUID();
+  demoSessions.set(token, { expiresAt: Date.now() + demoSessionLifetime });
+  const isHttps = req.secure || req.get("x-forwarded-proto")?.split(",")[0].trim() === "https";
+  res.setHeader("Set-Cookie", `sarkari_demo_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${demoSessionLifetime / 1000}${isHttps ? "; Secure" : ""}`);
+  res.set("Cache-Control", "no-store").json({ authenticated: true, mode: "demo-only" });
+});
+app.post("/api/demo/logout", (req, res) => {
+  const current = readDemoSession(req);
+  if (current) {
+    demoSessions.delete(current.token);
+    for (const [id, challenge] of demoChallenges) {
+      if (challenge.sessionToken === current.token) demoChallenges.delete(id);
+    }
+  }
+  res.setHeader("Set-Cookie", "sarkari_demo_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+  res.json({ authenticated: false });
+});
+app.post("/api/demo/challenge", requireDemoSession, (req, res) => {
+  clearExpiredChallenges();
+  const { token, session } = req.demoSession;
+  for (const [id, challenge] of demoChallenges) {
+    if (challenge.sessionToken === token) demoChallenges.delete(id);
+  }
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let challenge;
+  do {
+    challenge = Array.from({ length: 5 }, () => alphabet[randomInt(alphabet.length)]).join("");
+  } while (challenge === session.lastChallenge);
+  session.lastChallenge = challenge;
+  const challengeId = randomUUID();
+  demoChallenges.set(challengeId, { challenge, expiresAt: Date.now() + demoChallengeLifetime, sessionToken: token });
+  res.set("Cache-Control", "no-store").json({ challengeId, challenge });
+});
+app.post("/api/demo/submit", requireDemoSession, (req, res) => {
+  const allowedFields = new Set(["otp", "captcha", "challengeId"]);
+  if (!req.body || Array.isArray(req.body) || typeof req.body !== "object" || Object.keys(req.body).some((key) => !allowedFields.has(key))) {
+    return res.status(400).json({ error: "Only the demo OTP and current demo code may be submitted." });
+  }
+  const otp = typeof req.body?.otp === "string" ? req.body.otp : "";
+  const captcha = typeof req.body?.captcha === "string" ? req.body.captcha : "";
+  const challengeId = typeof req.body?.challengeId === "string" ? req.body.challengeId : "";
+  const challenge = demoChallenges.get(challengeId);
+  if (!challenge || challenge.sessionToken !== req.demoSession.token || challenge.expiresAt <= Date.now()) {
+    demoChallenges.delete(challengeId);
+    return res.status(400).json({ error: "This demo code expired. Refresh it and try again." });
+  }
+  if (!/^\d{6}$/.test(otp) || captcha.trim().toUpperCase() !== challenge.challenge) {
+    return res.status(400).json({ error: "Enter a six-digit demo OTP and the displayed demo code." });
+  }
+  demoChallenges.delete(challengeId);
+  const reference = `DEMO-${randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase()}`;
+  res.set("Cache-Control", "no-store").json({ status: "simulated", reference });
+});
 app.get("/api/languages", (_req, res) => res.json({ languages: [
   { code: "en", name: "English", speechLocale: "en-IN" },
   { code: "hi", name: "हिन्दी", speechLocale: "hi-IN" },
