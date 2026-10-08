@@ -54,6 +54,25 @@ test("student and senior demos ask a single targeted follow-up in the selected l
   assert.match(senior.question, /BPL/);
 });
 
+test("Hindi and Kannada yes/no replies resolve localized follow-up questions", () => {
+  const profile = { age: 65, need: "senior" };
+  const hindiYes = createDemoReply("हाँ, BPL कार्ड है", "hi", profile, "poorHousehold");
+  assert.equal(hindiYes.profile.poorHousehold, "yes");
+  assert.equal(hindiYes.pendingField, "");
+
+  const hindiNo = createDemoReply("नहीं, BPL कार्ड नहीं है", "hi", profile, "poorHousehold");
+  assert.equal(hindiNo.profile.poorHousehold, "no");
+  assert.equal(hindiNo.pendingField, "");
+
+  const kannadaYes = createDemoReply("ಹೌದು, BPL ಕಾರ್ಡ್ ಇದೆ", "kn", profile, "poorHousehold");
+  assert.equal(kannadaYes.profile.poorHousehold, "yes");
+  assert.equal(kannadaYes.pendingField, "");
+
+  const kannadaNo = createDemoReply("ಇಲ್ಲ, BPL ಕಾರ್ಡ್ ಇಲ್ಲ", "kn", profile, "poorHousehold");
+  assert.equal(kannadaNo.profile.poorHousehold, "no");
+  assert.equal(kannadaNo.pendingField, "");
+});
+
 test("HTTP API exposes the scheme workflow without an external AI key", async (t) => {
   const server = app.listen(0);
   await new Promise((resolve, reject) => {
