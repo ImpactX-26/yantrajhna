@@ -10,6 +10,7 @@ This is an independent demo, not a government service. Its screening is indicati
 - Visual need categories, one-question-at-a-time demo flow, and farmer/student/senior-citizen demo scenarios.
 - A 21-record scheme catalog with official source links and explicit confirmation-needed states where local or scheme conditions are not represented.
 - Rule-based eligibility screening, missing-information prompts, document readiness checklists, side-by-side comparison, and an application plan.
+- Checkpoint 2 adds a document-readiness tracker that keeps checked checklist items in this browser on this device only. It does not save the citizen profile or upload files.
 - Optional server-side Claude tool use grounded in the local catalog. The app remains usable in demo mode without an API key or network access to an AI provider.
 - Session-only conversation/profile state; saved scheme bookmarks use this browser's local storage.
 
@@ -40,6 +41,8 @@ No database setup or scheme-data loading command is needed. Edit `data/schemes.j
 ## Demo
 
 Choose English, Hindi, or Kannada, then select **Farmer**, **Student**, or **Senior citizen** under “Try a demo.” Each scenario uses sample details, invokes the same chat endpoint, displays the agent workflow, asks for a missing detail, returns matching catalog records, and enables scheme details, comparison, document checks, and the application plan. No demo credentials are required. Microphone access requires a supported browser and permission; when unavailable, type in the same chat box.
+
+For the Checkpoint 2 demo, open a scheme, mark one or more items in its document checklist, close the scheme, and reopen it. The checks remain after a page refresh in the same browser. Use **Clear checks** in that scheme's checklist to remove its saved progress.
 
 ## API
 
