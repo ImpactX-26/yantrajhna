@@ -382,9 +382,12 @@ function inferCategory(text) {
 }
 
 function answerPendingField(field, text, profile) {
-  const value = text.trim().toLocaleLowerCase();
-  const yes = /^(yes|yeah|y|ಹೌದು|ಹೌದು ಇದೆ|ಹೌದು ಇದೆ)$/i.test(value) || /\b(yes|have|ಹೌದು|ಇದೆ)\b/i.test(value);
-  const no = /^(no|nope|n|ಇಲ್ಲ)$/i.test(value) || /\b(no|ಇಲ್ಲ)\b/i.test(value);
+  const value = text.trim().toLocaleLowerCase().normalize("NFC");
+  const startsWithAnswer = (answers) => answers.some((answer) =>
+    value === answer || [" ", ",", "।", ".", "!", "?"].some((separator) => value.startsWith(`${answer}${separator}`))
+  );
+  const yes = startsWithAnswer(["yes", "yeah", "y", "have", "हाँ", "हां", "जी हाँ", "जी हां", "ಹೌದು", "ಹೌದು ಇದೆ", "ಸರಿ", "ಇದೆ"]);
+  const no = startsWithAnswer(["no", "nope", "n", "नहीं", "नही", "ना", "जी नहीं", "जी नही", "ಇಲ್ಲ", "ಬೇಡ"]);
   if (["cultivableLand", "scStudent", "poorHousehold", "ruralHousehold", "urbanArea", "puccaHouse", "householdLpg", "gender"].includes(field)) {
     if (yes) profile[field] = field === "gender" ? "woman" : "yes";
     if (no) profile[field] = field === "gender" ? "other" : "no";
