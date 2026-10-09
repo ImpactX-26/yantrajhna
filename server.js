@@ -557,9 +557,14 @@ app.post("/api/demo/challenge", requireDemoSession, (req, res) => {
     challenge = Array.from({ length: 5 }, () => alphabet[randomInt(alphabet.length)]).join("");
   } while (challenge === session.lastChallenge);
   session.lastChallenge = challenge;
+  let otp;
+  do {
+    otp = String(randomInt(100_000, 1_000_000));
+  } while (otp === session.lastOtp);
+  session.lastOtp = otp;
   const challengeId = randomUUID();
-  demoChallenges.set(challengeId, { challenge, expiresAt: Date.now() + demoChallengeLifetime, sessionToken: token });
-  res.set("Cache-Control", "no-store").json({ challengeId, challenge });
+  demoChallenges.set(challengeId, { challenge, otp, expiresAt: Date.now() + demoChallengeLifetime, sessionToken: token });
+  res.set("Cache-Control", "no-store").json({ challengeId, challenge, otp });
 });
 app.post("/api/demo/submit", requireDemoSession, (req, res) => {
   const allowedFields = new Set(["otp", "captcha", "challengeId"]);
@@ -574,7 +579,7 @@ app.post("/api/demo/submit", requireDemoSession, (req, res) => {
     demoChallenges.delete(challengeId);
     return res.status(400).json({ error: "This demo code expired. Refresh it and try again." });
   }
-  if (!/^\d{6}$/.test(otp) || captcha.trim().toUpperCase() !== challenge.challenge) {
+  if (otp !== challenge.otp || captcha.trim().toUpperCase() !== challenge.challenge) {
     return res.status(400).json({ error: "Enter a six-digit demo OTP and the displayed demo code." });
   }
   demoChallenges.delete(challengeId);

@@ -39,6 +39,7 @@ test("agent demo has a demo login and an in-app user-filled virtual workspace", 
   assert.match(html, /id="agent-demo-verification"/);
   assert.match(html, /Do not enter Aadhaar numbers/);
   assert.match(html, /id="agent-demo-captcha-code"/);
+  assert.match(html, /id="agent-demo-otp-code"/);
   assert.match(html, /id="agent-demo-scheme"/);
   assert.match(html, /id="agent-demo-dynamic-fields"/);
   assert.match(html, /id="agent-demo-eligibility"/);
@@ -88,9 +89,12 @@ test("demo code refresh invalidates old codes and the gate accepts only a simula
   assert.equal(firstResponse.status, 200);
   assert.equal(nextResponse.status, 200);
   assert.notEqual(first.challenge, next.challenge);
+  assert.match(first.otp, /^\d{6}$/);
+  assert.match(next.otp, /^\d{6}$/);
+  assert.notEqual(first.otp, next.otp);
 
   const oldCode = await postAs(baseUrl, cookie, "/api/demo/submit", {
-    otp: "123456", captcha: first.challenge, challengeId: first.challengeId
+    otp: first.otp, captcha: first.challenge, challengeId: first.challengeId
   });
   assert.equal(oldCode.status, 400);
 
@@ -98,18 +102,22 @@ test("demo code refresh invalidates old codes and the gate accepts only a simula
     otp: "12345", captcha: next.challenge, challengeId: next.challengeId
   });
   assert.equal(incomplete.status, 400);
+  const wrongOtp = await postAs(baseUrl, cookie, "/api/demo/submit", {
+    otp: "000000", captcha: next.challenge, challengeId: next.challengeId
+  });
+  assert.equal(wrongOtp.status, 400);
   const wrongCode = await postAs(baseUrl, cookie, "/api/demo/submit", {
-    otp: "123456", captcha: "WRONG", challengeId: next.challengeId
+    otp: next.otp, captcha: "WRONG", challengeId: next.challengeId
   });
   assert.equal(wrongCode.status, 400);
   const profileLeak = await postAs(baseUrl, cookie, "/api/demo/submit", {
-    otp: "123456", captcha: next.challenge, challengeId: next.challengeId,
+    otp: next.otp, captcha: next.challenge, challengeId: next.challengeId,
     applicant: "must not be accepted", document: "must not be accepted"
   });
   assert.equal(profileLeak.status, 400);
 
   const response = await postAs(baseUrl, cookie, "/api/demo/submit", {
-    otp: "123456", captcha: next.challenge.toLowerCase(), challengeId: next.challengeId
+    otp: next.otp, captcha: next.challenge.toLowerCase(), challengeId: next.challengeId
   });
   const result = await response.json();
   assert.equal(response.status, 200);
@@ -118,7 +126,7 @@ test("demo code refresh invalidates old codes and the gate accepts only a simula
   assert.deepEqual(Object.keys(result).sort(), ["reference", "status"]);
 
   const replay = await postAs(baseUrl, cookie, "/api/demo/submit", {
-    otp: "123456", captcha: next.challenge, challengeId: next.challengeId
+    otp: next.otp, captcha: next.challenge, challengeId: next.challengeId
   });
   assert.equal(replay.status, 400);
 });

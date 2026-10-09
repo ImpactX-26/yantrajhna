@@ -30,6 +30,10 @@
             <option value="hi">हिन्दी</option>
             <option value="kn">ಕನ್ನಡ</option>
           </select>
+          <button class="header-voice-button" id="voice-anywhere" type="button" data-i18n-aria-label="voiceHelp" aria-label="Talk to Saathi" aria-pressed="false" title="Talk to Saathi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg>
+            <span data-i18n="voiceHelp">Talk to Saathi</span>
+          </button>
           <button class="icon-button saved-filter" type="button" aria-label="Show saved schemes" title="Saved schemes" aria-pressed="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.7L6 21V4.75Z"/><path d="M9 7h6"/></svg>
           </button>
@@ -207,6 +211,8 @@
       <form id="profile-form" method="dialog">
         <div class="dialog-header"><div><p class="eyebrow" data-i18n="profileEyebrow">YOUR DETAILS</p><h2 data-i18n="profileDialogTitle">A clearer eligibility check</h2></div><button class="icon-button dialog-close" type="button" data-close-dialog aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
         <p class="dialog-intro" data-i18n="profileDialogIntro">Share only what you’re comfortable sharing. These answers stay in this browser session and are not saved.</p>
+        <button class="voice-profile-button" id="voice-profile" type="button" data-i18n-aria-label="voiceProfileAnswer" aria-label="Answer the highlighted question by voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg><span data-i18n="voiceProfileAnswer">Answer by voice</span></button>
+        <span id="profile-voice-state" class="voice-state" role="status" hidden></span>
         <div class="profile-fields">
           <label><span data-i18n="ageLabel">Age</span><input name="age" type="number" min="0" max="120" inputmode="numeric" placeholder="e.g. 42"></label>
           <label><span data-i18n="genderLabel">Applicant</span><select name="gender"><option value="unknown" data-i18n="preferNot">Choose or skip</option><option value="woman" data-i18n="woman">Woman</option><option value="man" data-i18n="man">Man</option><option value="other" data-i18n="other">Another identity</option></select></label>
@@ -265,6 +271,8 @@
               <div class="virtual-portal-heading"><div><p class="eyebrow" data-i18n="agentDemoSandboxBadge">LOCAL SIMULATION</p><h3 id="agent-demo-intake-title" data-i18n="agentDemoIntakeTitle">Your application details</h3></div><span class="demo-only-stamp">DEMO ONLY</span></div>
               <p class="agent-demo-form-intro" data-i18n="agentDemoIntakeText">Enter the details you want Saathi to use. These stay in this browser and are not sent to a server.</p>
               <form id="agent-demo-profile-form">
+                <button class="voice-profile-button" id="voice-agent-demo" type="button" data-i18n-aria-label="voiceDemoStart" aria-label="Fill demo by voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg><span data-i18n="voiceDemoStart">Fill demo by voice</span></button>
+                <span id="agent-demo-voice-state" class="voice-state" role="status" hidden></span>
                 <div class="agent-demo-fields intake-fields">
                   <label><span data-i18n="agentDemoApplicantLabel">Applicant name</span><input name="applicant" maxlength="80" autocomplete="name" required></label>
                   <label><span data-i18n="agentDemoStateLabel">State</span><input name="state" maxlength="60" autocomplete="address-level1" required></label>
@@ -308,15 +316,17 @@
               <section id="agent-demo-verification" class="agent-demo-verification" hidden aria-labelledby="agent-demo-verification-title">
                 <p class="eyebrow" data-i18n="agentDemoGateEyebrow">FINAL DEMO STEP</p><h3 id="agent-demo-verification-title" data-i18n="agentDemoGateTitle">Demo verification gate</h3>
                 <p data-i18n="agentDemoGateText">This is only a demo check. It is not connected to a government portal.</p>
-                <p class="agent-demo-otp-hint"><strong data-i18n="agentDemoOtpHint">Demo OTP:</strong> <span data-i18n="agentDemoOtpHintText">enter any six digits</span></p>
+                <p class="agent-demo-otp-hint"><strong data-i18n="agentDemoOtpHint">Demo OTP (DEMO ONLY):</strong> <code id="agent-demo-otp-code" aria-live="polite">------</code><span data-i18n="agentDemoOtpHintText">Enter the displayed six-digit code.</span></p>
                 <form id="agent-demo-form">
                   <div class="agent-demo-fields verification-fields">
-                    <label><span data-i18n="agentDemoOtpLabel">Test OTP</span><input id="agent-demo-otp" inputmode="numeric" autocomplete="off" maxlength="6" pattern="[0-9]{6}" aria-describedby="agent-demo-otp-help"></label>
+                    <label><span data-i18n="agentDemoOtpLabel">Enter demo OTP</span><input id="agent-demo-otp" inputmode="numeric" autocomplete="off" maxlength="6" pattern="[0-9]{6}" aria-describedby="agent-demo-otp-help"></label>
                     <label><span data-i18n="agentDemoCaptchaLabel">Demo code</span><input id="agent-demo-captcha" autocomplete="off" aria-describedby="agent-demo-captcha-help"></label>
                   </div>
-                  <p id="agent-demo-otp-help" class="agent-demo-help" data-i18n="agentDemoOtpHelp">Any six digits work in this demo.</p>
+                  <p id="agent-demo-otp-help" class="agent-demo-help" data-i18n="agentDemoOtpHelp">Enter the random OTP shown above.</p>
                   <p id="agent-demo-captcha-help" class="agent-demo-help"><span data-i18n="agentDemoCaptchaHelp">Type the displayed code:</span></p>
                   <div class="demo-captcha-row"><code id="agent-demo-captcha-code" aria-live="polite">-----</code><button id="refresh-agent-demo-captcha" class="icon-button" type="button" data-i18n-aria-label="agentDemoRefreshCode" aria-label="Refresh demo code" title="Refresh demo code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 6l2 2M4 16l2 2a7 7 0 0 0 12.5-3"/></svg></button></div>
+                  <button class="voice-profile-button" id="voice-agent-demo-verification" type="button" data-i18n-aria-label="voiceVerifyStart" aria-label="Enter codes by voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg><span data-i18n="voiceVerifyStart">Enter codes by voice</span></button>
+                  <span id="agent-demo-verification-voice-state" class="voice-state" role="status" hidden></span>
                   <button id="submit-agent-demo" class="primary-button" type="submit" disabled data-i18n="agentDemoSubmit">Submit demo application</button>
                 </form>
               </section>

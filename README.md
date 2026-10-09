@@ -45,7 +45,7 @@ Choose English, Hindi, or Kannada, then select **Farmer**, **Student**, or **Sen
 
 For the Checkpoint 2 demo, open a scheme, mark one or more items in its document checklist, close the scheme, and reopen it. The checks remain after a page refresh in the same browser. Use **Clear checks** in that scheme's checklist to remove its saved progress.
 
-For the virtual agent walkthrough, sign in with the public demo credentials shown on the login screen (`demo@sarkarisaathi.in` / `SaathiDemo26!`). Choose **Run virtual demo**, enter the applicant's sample details, and let Saathi transfer them into the virtual form. The details stay in page memory and are cleared when the workspace closes; they are not sent to the server. The supporting document is simulated and no file is uploaded. Enter any six digits and the freshly displayed demo code to create a local reference and mark the application as submitted in the demo only. Refreshing the code invalidates the previous one. The receipt states that nothing was sent to a government service. The shared login is only a public prototype gate, not real account security.
+For the virtual agent walkthrough, sign in with the public demo credentials shown on the login screen (`demo@sarkarisaathi.in` / `SaathiDemo26!`). Choose **Run virtual demo**, enter the applicant's sample details, and let Saathi transfer them into the virtual form. The details stay in page memory and are cleared when the workspace closes; they are not sent to the server. The supporting document is simulated and no file is uploaded. Enter the random six-digit demo OTP and the displayed CAPTCHA to create a local reference and mark the application as submitted in the demo only. Refreshing rotates both codes and invalidates the previous pair. The receipt states that nothing was sent to a government service. The shared login is only a public prototype gate, not real account security.
 
 Choose English, Hindi, or Kannada before using **Read answer aloud** or the microphone. Voice input requests the selected Indian locale. Speech output selects a matching browser/system voice and will tell you when Hindi or Kannada speech is unavailable rather than silently speaking English. Available voices depend on the browser and operating system.
 
@@ -61,8 +61,8 @@ Choose English, Hindi, or Kannada before using **Read answer aloud** or the micr
 - `POST /api/schemes/compare`
 - `POST /api/application-guide`
 - `GET /api/demo/session`, `POST /api/demo/login`, and `POST /api/demo/logout` (public demo-only shared account; in-memory session)
-- `POST /api/demo/challenge` (creates a fresh session-bound demo code)
-- `POST /api/demo/submit` (accepts a six-digit test OTP and the current demo code; returns a simulated reference)
+- `POST /api/demo/challenge` (creates a fresh session-bound random six-digit demo OTP and CAPTCHA)
+- `POST /api/demo/submit` (accepts only the current demo OTP and CAPTCHA; returns a simulated reference)
 
 The catalog fields include `id`, `name`, `category`, `level`, `description`, `benefits`, `eligibility`, `eligibilityRules`, `requiredDocuments`, `applicationMethod`, `official_url`, `source`, `state`, and `last_verified`. Source JSON uses the existing camelCase record names; the API normalizes both naming styles.
 

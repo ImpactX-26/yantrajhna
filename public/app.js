@@ -1,5 +1,7 @@
 import { readDocumentProgress, writeDocumentProgress } from "./progress-store.js";
 import { evaluateSchemeEligibility } from "./eligibility.js";
+import { buildDemoPrefill } from "./demo-prefill.js";
+import { isDemoApplicationVoiceCommand, isEligibilityVoiceCommand, matchSchemeFromVoice, normalizeVoiceText, parseSpokenAge, parseSpokenAmount, spokenOtpDigits } from "./voice-input.js";
 
 const words = {
   en: {
@@ -139,8 +141,8 @@ Object.assign(words.en, {
   agentDemoDocumentTitle: "Sample supporting document", agentDemoDocumentText: "Land record — DEMO ONLY.pdf. Simulated; no file uploaded.",
   agentDemoSimulated: "SIMULATED", agentDemoGateEyebrow: "FINAL DEMO STEP", agentDemoGateTitle: "Demo verification gate",
   agentDemoGateText: "In a real service, stop here and enter the OTP yourself. This is not connected to a government portal.",
-  agentDemoOtpHint: "Demo OTP:", agentDemoOtpHintText: "enter any six digits", agentDemoOtpLabel: "Test OTP",
-  agentDemoCaptchaLabel: "Demo CAPTCHA", agentDemoOtpHelp: "Any six digits work in this demo.",
+  agentDemoOtpHint: "Demo OTP (DEMO ONLY):", agentDemoOtpHintText: "Enter the displayed six-digit code.", agentDemoOtpLabel: "Enter demo OTP",
+  agentDemoCaptchaLabel: "Demo CAPTCHA", agentDemoOtpHelp: "Enter the random OTP shown above.",
   agentDemoCaptchaHelp: "Type this word:", agentDemoSubmit: "Submit demo application",
   agentDemoFilling: "Preparing sample field", agentDemoGateReady: "Sample form ready. Review it, then complete the demo gate.",
   agentDemoSubmitting: "Creating simulated receipt…", agentDemoInvalid: "Check the six-digit OTP and enter the displayed demo code.",
@@ -158,8 +160,8 @@ Object.assign(words.hi, {
   agentDemoDocumentTitle: "नमूना सहायक दस्तावेज़", agentDemoDocumentText: "भूमि रिकॉर्ड — केवल डेमो.pdf। नकली; कोई फ़ाइल अपलोड नहीं हुई।",
   agentDemoSimulated: "सिमुलेटेड", agentDemoGateEyebrow: "डेमो का अंतिम चरण", agentDemoGateTitle: "डेमो पुष्टि चरण",
   agentDemoGateText: "असली सेवा में यहाँ रुकें और OTP स्वयं दर्ज करें। यह सरकारी पोर्टल से जुड़ा नहीं है।",
-  agentDemoOtpHint: "डेमो OTP:", agentDemoOtpHintText: "कोई भी छह अंक लिखें", agentDemoOtpLabel: "टेस्ट OTP",
-  agentDemoCaptchaLabel: "डेमो CAPTCHA", agentDemoOtpHelp: "इस डेमो में कोई भी छह अंक चलेंगे।",
+  agentDemoOtpHint: "डेमो OTP (केवल डेमो):", agentDemoOtpHintText: "ऊपर दिखाया छह अंकों का कोड लिखें।", agentDemoOtpLabel: "डेमो OTP लिखें",
+  agentDemoCaptchaLabel: "डेमो CAPTCHA", agentDemoOtpHelp: "ऊपर दिखाया गया नया OTP लिखें।",
   agentDemoCaptchaHelp: "यह शब्द लिखें:", agentDemoSubmit: "डेमो आवेदन जमा करें",
   agentDemoFilling: "नमूना फ़ील्ड भर रहा है", agentDemoGateReady: "नमूना फ़ॉर्म तैयार है। इसे देखें और डेमो पुष्टि पूरी करें।",
   agentDemoSubmitting: "नकली रसीद बन रही है…", agentDemoInvalid: "छह अंकों का OTP जाँचें और दिखाया गया डेमो कोड लिखें।",
@@ -177,8 +179,8 @@ Object.assign(words.kn, {
   agentDemoDocumentTitle: "ಮಾದರಿ ಸಹಾಯಕ ದಾಖಲೆ", agentDemoDocumentText: "ಭೂ ದಾಖಲೆ — ಡೆಮೋ ಮಾತ್ರ.pdf. ಸಿಮ್ಯುಲೇಟೆಡ್; ಫೈಲ್ ಅಪ್‌ಲೋಡ್ ಆಗಿಲ್ಲ.",
   agentDemoSimulated: "ಸಿಮ್ಯುಲೇಟೆಡ್", agentDemoGateEyebrow: "ಡೆಮೋದ ಕೊನೆಯ ಹಂತ", agentDemoGateTitle: "ಡೆಮೋ ಪರಿಶೀಲನೆ ಹಂತ",
   agentDemoGateText: "ನಿಜವಾದ ಸೇವೆಯಲ್ಲಿ ಇಲ್ಲಿ ನಿಲ್ಲಿಸಿ OTP ಅನ್ನು ನೀವೇ ನಮೂದಿಸಿ. ಇದು ಸರ್ಕಾರಿ ಪೋರ್ಟಲ್‌ಗೆ ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ.",
-  agentDemoOtpHint: "ಡೆಮೋ OTP:", agentDemoOtpHintText: "ಯಾವುದೇ ಆರು ಅಂಕಿಗಳನ್ನು ನಮೂದಿಸಿ", agentDemoOtpLabel: "ಪರೀಕ್ಷಾ OTP",
-  agentDemoCaptchaLabel: "ಡೆಮೋ CAPTCHA", agentDemoOtpHelp: "ಈ ಡೆಮೋದಲ್ಲಿ ಯಾವುದೇ ಆರು ಅಂಕಿಗಳು ಕೆಲಸ ಮಾಡುತ್ತವೆ.",
+  agentDemoOtpHint: "ಡೆಮೋ OTP (ಡೆಮೋ ಮಾತ್ರ):", agentDemoOtpHintText: "ಮೇಲೆ ತೋರಿಸಿರುವ ಆರು ಅಂಕಿಯ ಕೋಡ್ ನಮೂದಿಸಿ.", agentDemoOtpLabel: "ಡೆಮೋ OTP ನಮೂದಿಸಿ",
+  agentDemoCaptchaLabel: "ಡೆಮೋ CAPTCHA", agentDemoOtpHelp: "ಮೇಲೆ ತೋರಿಸಿರುವ ಹೊಸ OTP ನಮೂದಿಸಿ.",
   agentDemoCaptchaHelp: "ಈ ಪದವನ್ನು ಟೈಪ್ ಮಾಡಿ:", agentDemoSubmit: "ಡೆಮೋ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ",
   agentDemoFilling: "ಮಾದರಿ ಕ್ಷೇತ್ರ ತುಂಬಲಾಗುತ್ತಿದೆ", agentDemoGateReady: "ಮಾದರಿ ಫಾರ್ಮ್ ಸಿದ್ಧವಾಗಿದೆ. ಪರಿಶೀಲಿಸಿ, ನಂತರ ಡೆಮೋ ದೃಢೀಕರಣ ಮುಂದುವರಿಸಿ.",
   agentDemoSubmitting: "ಸಿಮ್ಯುಲೇಟೆಡ್ ರಸೀದಿ ರಚಿಸಲಾಗುತ್ತಿದೆ…", agentDemoInvalid: "ಆರು ಅಂಕಿಯ OTP ಪರಿಶೀಲಿಸಿ ಮತ್ತು ತೋರಿಸಿದ ಡೆಮೋ ಕೋಡ್ ನಮೂದಿಸಿ.",
@@ -200,7 +202,8 @@ Object.assign(words.en, {
   agentDemoNotProvided: "Not provided",
   agentDemoBegin: "Let Saathi fill the demo form", agentDemoFormTitle: "Virtual application form",
   agentDemoFormIntro: "Saathi is transferring the details you entered into this virtual form.",
-  agentDemoGateText: "Enter any six digits as the demo OTP. This local check does not contact a government service.",
+  agentDemoGateText: "A random demo OTP and CAPTCHA appear here. No real SMS is sent and no government service is contacted.",
+  agentDemoRefreshCode: "Refresh OTP and CAPTCHA", agentDemoCodeRefreshed: "New demo OTP and CAPTCHA generated.",
   agentDemoCaptchaLabel: "Demo code", agentDemoCaptchaHelp: "Type the displayed code:",
   agentDemoRefreshCode: "Get a new demo code", agentDemoCodeRefreshed: "A fresh demo code is ready.",
   agentDemoStartError: "Could not start the demo. Please try again.",
@@ -223,7 +226,8 @@ Object.assign(words.hi, {
   agentDemoNotProvided: "नहीं दिया",
   agentDemoBegin: "साथी से डेमो फ़ॉर्म भरवाएँ", agentDemoFormTitle: "वर्चुअल आवेदन फ़ॉर्म",
   agentDemoFormIntro: "साथी आपकी दी हुई जानकारी इस वर्चुअल फ़ॉर्म में भर रहा है।",
-  agentDemoGateText: "डेमो OTP के लिए कोई भी छह अंक लिखें। यह स्थानीय जाँच सरकारी सेवा से नहीं जुड़ी है।",
+  agentDemoGateText: "यहाँ नया डेमो OTP और CAPTCHA दिखेगा। कोई असली SMS नहीं भेजा जाता और यह सरकारी सेवा से नहीं जुड़ा है।",
+  agentDemoRefreshCode: "OTP और CAPTCHA बदलें", agentDemoCodeRefreshed: "नया डेमो OTP और CAPTCHA तैयार है।",
   agentDemoCaptchaLabel: "डेमो कोड", agentDemoCaptchaHelp: "दिखाया गया कोड लिखें:",
   agentDemoRefreshCode: "नया डेमो कोड लें", agentDemoCodeRefreshed: "नया डेमो कोड तैयार है।",
   agentDemoStartError: "डेमो शुरू नहीं हुआ। कृपया फिर कोशिश करें।",
@@ -246,13 +250,63 @@ Object.assign(words.kn, {
   agentDemoNotProvided: "ನೀಡಿಲ್ಲ",
   agentDemoBegin: "ಡೆಮೋ ಫಾರ್ಮ್ ತುಂಬಲು ಸಾಥಿಗೆ ಹೇಳಿ", agentDemoFormTitle: "ವರ್ಚುವಲ್ ಅರ್ಜಿ ಫಾರ್ಮ್",
   agentDemoFormIntro: "ನೀವು ನೀಡಿದ ವಿವರಗಳನ್ನು ಸಾಥಿ ಈ ವರ್ಚುವಲ್ ಫಾರ್ಮ್‌ಗೆ ಹಾಕುತ್ತಿದೆ.",
-  agentDemoGateText: "ಡೆಮೋ OTPಗಾಗಿ ಯಾವುದೇ ಆರು ಅಂಕಿಗಳನ್ನು ನಮೂದಿಸಿ. ಈ ಸ್ಥಳೀಯ ಪರಿಶೀಲನೆ ಸರ್ಕಾರಿ ಸೇವೆಗೆ ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ.",
+  agentDemoGateText: "ಹೊಸ ಡೆಮೋ OTP ಮತ್ತು CAPTCHA ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತವೆ. ನಿಜವಾದ SMS ಕಳುಹಿಸುವುದಿಲ್ಲ; ಸರ್ಕಾರಿ ಸೇವೆಗೆ ಸಂಪರ್ಕವಿಲ್ಲ.",
+  agentDemoRefreshCode: "OTP ಮತ್ತು CAPTCHA ಬದಲಿಸಿ", agentDemoCodeRefreshed: "ಹೊಸ ಡೆಮೋ OTP ಮತ್ತು CAPTCHA ಸಿದ್ಧವಾಗಿವೆ.",
   agentDemoCaptchaLabel: "ಡೆಮೋ ಕೋಡ್", agentDemoCaptchaHelp: "ತೋರಿಸಿದ ಕೋಡ್ ನಮೂದಿಸಿ:",
   agentDemoRefreshCode: "ಹೊಸ ಡೆಮೋ ಕೋಡ್ ಪಡೆಯಿರಿ", agentDemoCodeRefreshed: "ಹೊಸ ಡೆಮೋ ಕೋಡ್ ಸಿದ್ಧವಾಗಿದೆ.",
   agentDemoStartError: "ಡೆಮೋ ಪ್ರಾರಂಭಿಸಲಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
   agentDemoInvalid: "ಆರು ಅಂಕಿಯ OTP ಪರಿಶೀಲಿಸಿ ಮತ್ತು ತೋರಿಸಿದ ಡೆಮೋ ಕೋಡ್ ನಮೂದಿಸಿ.",
   speechVoiceUnavailable: "ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಈ ಭಾಷೆಯ ಧ್ವನಿ ಲಭ್ಯವಿಲ್ಲ. ಹೊಂದಾಣಿಕೆಯ ಸಿಸ್ಟಮ್ ಧ್ವನಿ ಸೇರಿಸಿ ಅಥವಾ ಲಿಖಿತ ಉತ್ತರ ಓದಿ.",
   speechVoiceError: "ಧ್ವನಿ ಪ್ಲೇ ಆಗಲಿಲ್ಲ. ಲಿಖಿತ ಉತ್ತರ ಲಭ್ಯವಿದೆ."
+});
+
+Object.assign(words.en, { voiceHelp: "Talk to Saathi", voiceSearchFound: "I found {count} schemes." });
+Object.assign(words.hi, { voiceHelp: "साथी से बात करें", voiceSearchFound: "मुझे {count} योजनाएँ मिलीं।" });
+Object.assign(words.kn, { voiceHelp: "ಸಾಥಿಯೊಂದಿಗೆ ಮಾತನಾಡಿ", voiceSearchFound: "ನನಗೆ {count} ಯೋಜನೆಗಳು ಸಿಕ್ಕಿವೆ." });
+Object.assign(words.en, {
+  eligibilityOffer: "Would you like Saathi to open the eligibility check? Say open eligibility check, or choose the button.",
+  demoVoiceHint: "To start a virtual demo for one, say: open demo application for, then the scheme name.",
+  demoForScheme: "Start virtual demo for this scheme",
+  openEligibility: "Open eligibility check", voiceProfileAnswer: "Start voice check", voiceProfileStop: "Stop voice check",
+  voiceFormIntro: "Eligibility check opened. I will ask one question at a time. Answer by voice or typing.", voiceOpeningDemo: "Opening the virtual demo application.",
+  voiceAnswerHint: "Say your answer. Say skip if you are not sure.", voiceAnswerChoices: "Say one of these choices: {choices}. Say skip if you are not sure.", voiceStateHint: "Say your state name, or say skip if you are not sure.", voiceAnswerSaved: "Answer saved.",
+  voiceDemoStart: "Fill demo by voice", voiceDemoStop: "Stop voice entry", voiceDemoReady: "Your details are ready. Say start demo when you are ready.",
+  voiceSchemeHint: "Say the scheme name you need help with, or say skip.",
+  voiceVerifyStart: "Enter codes by voice", voiceVerifyStop: "Stop voice entry", voiceVerifyOtp: "Read the six demo OTP digits shown on screen.",
+  voiceVerifyCaptcha: "Read the demo CAPTCHA code shown on screen.", voiceVerifyReady: "Both codes are filled. Say submit demo to finish, or say refresh code for new codes.",
+  voiceVerifySubmit: "Submitting this local demo only.", voiceVerifyUnclear: "I could not read that code. Please repeat it or type it.",
+  voiceFormUnclear: "I did not understand. Please say the answer again, or type it instead.",
+  voiceCheckReady: "Say check my options when you are ready to see the result.", voiceCheckStarting: "Checking your options."
+});
+Object.assign(words.hi, {
+  eligibilityOffer: "क्या मैं आपकी पात्रता जाँच खोलूँ? ‘पात्रता जाँच खोलें’ कहें या बटन दबाएँ।",
+  demoVoiceHint: "किसी योजना का वर्चुअल डेमो शुरू करने के लिए कहें: डेमो आवेदन खोलें, फिर योजना का नाम बोलें।",
+  demoForScheme: "इस योजना का वर्चुअल डेमो शुरू करें",
+  openEligibility: "पात्रता जाँच खोलें", voiceProfileAnswer: "आवाज़ से जाँच शुरू करें", voiceProfileStop: "आवाज़ से जाँच रोकें",
+  voiceFormIntro: "पात्रता जाँच खुल गई है। मैं एक-एक सवाल पूछूँगा। बोलकर या लिखकर जवाब दें।", voiceOpeningDemo: "वर्चुअल डेमो आवेदन खोला जा रहा है।",
+  voiceAnswerHint: "अपना जवाब बोलें। पता न हो तो ‘छोड़ें’ कहें।", voiceAnswerChoices: "इनमें से एक जवाब बोलें: {choices}। पता न हो तो ‘छोड़ें’ कहें।", voiceStateHint: "अपने राज्य का नाम बोलें। पता न हो तो ‘छोड़ें’ कहें।", voiceAnswerSaved: "जवाब दर्ज हुआ।",
+  voiceDemoStart: "डेमो को बोलकर भरें", voiceDemoStop: "बोलकर भरना रोकें", voiceDemoReady: "जानकारी तैयार है। शुरू करने के लिए ‘डेमो शुरू करें’ कहें।",
+  voiceSchemeHint: "जिस योजना में मदद चाहिए उसका नाम बोलें, या ‘छोड़ें’ कहें।",
+  voiceVerifyStart: "कोड बोलकर भरें", voiceVerifyStop: "बोलकर भरना रोकें", voiceVerifyOtp: "स्क्रीन पर दिख रहे छह डेमो OTP अंक बोलें।",
+  voiceVerifyCaptcha: "स्क्रीन पर दिख रहा डेमो CAPTCHA कोड बोलें।", voiceVerifyReady: "दोनों कोड भर गए हैं। पूरा करने के लिए ‘डेमो जमा करें’ कहें या नए कोड के लिए ‘कोड बदलें’ कहें।",
+  voiceVerifySubmit: "सिर्फ यह स्थानीय डेमो जमा हो रहा है।", voiceVerifyUnclear: "कोड समझ नहीं आया। फिर से बोलें या टाइप करें।",
+  voiceFormUnclear: "जवाब समझ नहीं आया। फिर से बोलें या लिखकर जवाब दें।",
+  voiceCheckReady: "नतीजा देखने के लिए तैयार होने पर ‘मेरे विकल्प जाँचें’ कहें।", voiceCheckStarting: "आपके विकल्प जाँचे जा रहे हैं।"
+});
+Object.assign(words.kn, {
+  eligibilityOffer: "ನಿಮ್ಮ ಅರ್ಹತಾ ಪರಿಶೀಲನೆಯನ್ನು ತೆರೆಯಲಾ? ‘ಅರ್ಹತೆ ಪರಿಶೀಲನೆ ತೆರೆಯಿರಿ’ ಎಂದು ಹೇಳಿ ಅಥವಾ ಬಟನ್ ಒತ್ತಿ.",
+  demoVoiceHint: "ಯೋಜನೆಯ ವರ್ಚುವಲ್ ಡೆಮೊ ಆರಂಭಿಸಲು ‘ಡೆಮೋ ಅರ್ಜಿ ತೆರೆಯಿರಿ’ ಎಂದು ಹೇಳಿ, ನಂತರ ಯೋಜನೆಯ ಹೆಸರನ್ನು ಹೇಳಿ.",
+  demoForScheme: "ಈ ಯೋಜನೆಯ ವರ್ಚುವಲ್ ಡೆಮೊ ಪ್ರಾರಂಭಿಸಿ",
+  openEligibility: "ಅರ್ಹತೆ ಪರಿಶೀಲನೆ ತೆರೆಯಿರಿ", voiceProfileAnswer: "ಧ್ವನಿ ಪರಿಶೀಲನೆ ಪ್ರಾರಂಭಿಸಿ", voiceProfileStop: "ಧ್ವನಿ ಪರಿಶೀಲನೆ ನಿಲ್ಲಿಸಿ",
+  voiceFormIntro: "ಅರ್ಹತಾ ಪರಿಶೀಲನೆ ತೆರೆದಿದೆ. ನಾನು ಒಂದೊಂದೇ ಪ್ರಶ್ನೆ ಕೇಳುತ್ತೇನೆ. ಮಾತನಾಡಿ ಅಥವಾ ಟೈಪ್ ಮಾಡಿ ಉತ್ತರಿಸಿ.", voiceOpeningDemo: "ವರ್ಚುವಲ್ ಡೆಮೋ ಅರ್ಜಿಯನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+  voiceAnswerHint: "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಹೇಳಿ. ಖಚಿತವಿಲ್ಲದಿದ್ದರೆ ‘ಬಿಡಿ’ ಎಂದು ಹೇಳಿ.", voiceAnswerChoices: "ಈ ಆಯ್ಕೆಗಳಲ್ಲಿ ಒಂದನ್ನು ಹೇಳಿ: {choices}. ಖಚಿತವಿಲ್ಲದಿದ್ದರೆ ‘ಬಿಡಿ’ ಎಂದು ಹೇಳಿ.", voiceStateHint: "ನಿಮ್ಮ ರಾಜ್ಯದ ಹೆಸರನ್ನು ಹೇಳಿ. ಖಚಿತವಿಲ್ಲದಿದ್ದರೆ ‘ಬಿಡಿ’ ಎಂದು ಹೇಳಿ.", voiceAnswerSaved: "ಉತ್ತರ ದಾಖಲಿಸಲಾಗಿದೆ.",
+  voiceDemoStart: "ಡೆಮೋವನ್ನು ಮಾತನಾಡಿ ತುಂಬಿ", voiceDemoStop: "ಧ್ವನಿ ನಮೂದನ್ನು ನಿಲ್ಲಿಸಿ", voiceDemoReady: "ನಿಮ್ಮ ವಿವರಗಳು ಸಿದ್ಧವಾಗಿವೆ. ಪ್ರಾರಂಭಿಸಲು ‘ಡೆಮೋ ಪ್ರಾರಂಭಿಸಿ’ ಎಂದು ಹೇಳಿ.",
+  voiceSchemeHint: "ನಿಮಗೆ ಬೇಕಾದ ಯೋಜನೆಯ ಹೆಸರನ್ನು ಹೇಳಿ ಅಥವಾ ‘ಬಿಡಿ’ ಎಂದು ಹೇಳಿ.",
+  voiceVerifyStart: "ಕೋಡ್‌ಗಳನ್ನು ಮಾತನಾಡಿ ನಮೂದಿಸಿ", voiceVerifyStop: "ಧ್ವನಿ ನಮೂದನ್ನು ನಿಲ್ಲಿಸಿ", voiceVerifyOtp: "ಪರದೆಯಲ್ಲಿರುವ ಆರು ಅಂಕಿಯ ಡೆಮೋ OTP ಹೇಳಿ.",
+  voiceVerifyCaptcha: "ಪರದೆಯಲ್ಲಿರುವ ಡೆಮೋ CAPTCHA ಕೋಡ್ ಹೇಳಿ.", voiceVerifyReady: "ಎರಡೂ ಕೋಡ್‌ಗಳು ತುಂಬಿವೆ. ಮುಗಿಸಲು ‘ಡೆಮೋ ಸಲ್ಲಿಸಿ’ ಅಥವಾ ಹೊಸ ಕೋಡ್‌ಗಳಿಗಾಗಿ ‘ಕೋಡ್ ಬದಲಿಸಿ’ ಎಂದು ಹೇಳಿ.",
+  voiceVerifySubmit: "ಈ ಸ್ಥಳೀಯ ಡೆಮೋ ಮಾತ್ರ ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ.", voiceVerifyUnclear: "ಕೋಡ್ ಅರ್ಥವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಹೇಳಿ ಅಥವಾ ಟೈಪ್ ಮಾಡಿ.",
+  voiceFormUnclear: "ಉತ್ತರ ಅರ್ಥವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಹೇಳಿ ಅಥವಾ ಟೈಪ್ ಮಾಡಿ.",
+  voiceCheckReady: "ಫಲಿತಾಂಶ ನೋಡಲು ಸಿದ್ಧರಾದಾಗ ‘ನನ್ನ ಆಯ್ಕೆ ಪರಿಶೀಲಿಸಿ’ ಎಂದು ಹೇಳಿ.", voiceCheckStarting: "ನಿಮ್ಮ ಆಯ್ಕೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ."
 });
 
 Object.assign(words.en, {
@@ -353,10 +407,24 @@ const profileDialog = document.querySelector("#profile-dialog");
 const schemeDialog = document.querySelector("#scheme-dialog");
 const compareDialog = document.querySelector("#compare-dialog");
 const demoLoginDialog = document.querySelector("#demo-login-dialog");
+const agentDemoDialog = document.querySelector("#agent-demo-dialog");
 const searchInput = document.querySelector("#scheme-search");
 const assistantInput = document.querySelector("#assistant-input");
 const toast = document.querySelector("#toast");
 let toastTimer;
+let activeRecognition = null;
+let activeVoiceButton = null;
+let speechRequest = 0;
+let activeProfileField = null;
+let profileVoiceMode = false;
+let profileSubmitFromVoice = false;
+let activeAgentDemoField = null;
+let agentDemoVoiceMode = false;
+let agentDemoSubmitFromVoice = false;
+let activeAgentDemoVerificationField = null;
+let agentDemoVerificationVoiceMode = false;
+let agentDemoVerificationSubmitFromVoice = false;
+const agentDemoVoiceSkippedFields = new Set();
 
 function readSaved() {
   try {
@@ -374,6 +442,7 @@ function t(key) {
 let agentDemoCompleted = false;
 let agentDemoRun = 0;
 let agentDemoChallengeId = "";
+let pendingAgentDemoContext = null;
 
 function showDemoLogin() {
   if (!demoLoginDialog.open) demoLoginDialog.showModal();
@@ -420,6 +489,11 @@ async function signInToDemo(event) {
     document.querySelector("#demo-login-password").value = "";
     status.textContent = "";
     demoLoginDialog.close();
+    if (pendingAgentDemoContext) {
+      const context = pendingAgentDemoContext;
+      pendingAgentDemoContext = null;
+      startAgentDemo(context);
+    }
   } catch {
     status.textContent = t("demoLoginNetworkError");
     status.hidden = false;
@@ -613,17 +687,28 @@ function showAgentDemoReceipt(reference) {
   document.querySelector("#journey-dashboard").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function startAgentDemo() {
+function startAgentDemo(context = null) {
   const button = document.querySelector("#start-agent-demo");
   const dialog = document.querySelector("#agent-demo-dialog");
+  if (!context || typeof context !== "object" || !("schemeId" in context || "profile" in context)) context = null;
   if (!state.demoAuthenticated) {
+    pendingAgentDemoContext = context || { profile: { ...(state.profile || {}) } };
     showDemoLogin();
     return;
   }
   if (dialog.open) return;
+  const launchContext = context || pendingAgentDemoContext || {};
+  pendingAgentDemoContext = null;
   agentDemoRun += 1;
   agentDemoCompleted = false;
   state.agentDemoApplication = null;
+  agentDemoVoiceSkippedFields.clear();
+  activeAgentDemoField = null;
+  activeAgentDemoVerificationField = "otp";
+  agentDemoSubmitFromVoice = false;
+  agentDemoVerificationSubmitFromVoice = false;
+  setAgentDemoVoiceMode(false);
+  setAgentDemoVerificationVoiceMode(false);
   agentDemoChallengeId = "";
   document.querySelector("#agent-demo-receipt").hidden = true;
   document.querySelector("#agent-demo-modal-receipt").hidden = true;
@@ -632,14 +717,27 @@ function startAgentDemo() {
   document.querySelector("#agent-demo-eligibility").hidden = true;
   document.querySelector("#agent-demo-verification").hidden = true;
   document.querySelector("#agent-demo-document").hidden = true;
-  document.querySelector("#agent-demo-profile-form").reset();
+  const profileForm = document.querySelector("#agent-demo-profile-form");
+  profileForm.reset();
+  renderAgentDemoSchemeOptions();
+  const prefill = buildDemoPrefill(launchContext.profile || state.profile || {}, launchContext.schemeId || "");
+  if ([...profileForm.elements.schemeId.options].some((option) => option.value === prefill.schemeId)) {
+    profileForm.elements.schemeId.value = prefill.schemeId;
+  }
   state.agentDemoEligibility = null;
   renderAgentDemoQuestions();
+  for (const [name, value] of Object.entries(prefill)) {
+    const field = profileForm.elements.namedItem(name);
+    if (!field) continue;
+    if (field.tagName === "SELECT" && ![...field.options].some((option) => option.value === value)) continue;
+    field.value = value;
+  }
   document.querySelectorAll("[data-agent-field]").forEach((field) => { field.value = ""; });
   document.querySelector("#agent-demo-progress").value = 0;
   document.querySelector("#agent-demo-otp").value = "";
   document.querySelector("#agent-demo-captcha").value = "";
   document.querySelector("#agent-demo-captcha-code").textContent = "-----";
+  document.querySelector("#agent-demo-otp-code").textContent = "------";
   document.querySelector("#agent-demo-otp").disabled = false;
   document.querySelector("#agent-demo-captcha").disabled = false;
   document.querySelector("#submit-agent-demo").disabled = true;
@@ -655,6 +753,8 @@ async function beginAgentDemo(event) {
   event.preventDefault();
   const form = event.currentTarget;
   if (!form.reportValidity()) return;
+  const speakResult = agentDemoSubmitFromVoice;
+  agentDemoSubmitFromVoice = false;
   const submit = document.querySelector("#agent-demo-begin");
   const values = Object.fromEntries(new FormData(form).entries());
   const scheme = state.schemes.find((item) => item.id === values.schemeId);
@@ -686,9 +786,11 @@ async function beginAgentDemo(event) {
     document.querySelector("#agent-demo-output").hidden = false;
     document.querySelector("#agent-demo-modal-status").textContent = t("agentDemoOpening");
     await runAgentDemo(++agentDemoRun);
+    if (speakResult) await speak(document.querySelector("#agent-demo-modal-status").textContent);
   } catch {
     state.agentDemoApplication = null;
     document.querySelector("#agent-demo-modal-status").textContent = t("agentDemoStartError");
+    if (speakResult) await speak(t("agentDemoStartError"));
   } finally {
     submit.disabled = false;
   }
@@ -697,8 +799,11 @@ async function beginAgentDemo(event) {
 async function refreshAgentDemoChallenge(announce = false) {
   const refresh = document.querySelector("#refresh-agent-demo-captcha");
   const captchaInput = document.querySelector("#agent-demo-captcha");
+  const otpInput = document.querySelector("#agent-demo-otp");
   agentDemoChallengeId = "";
   document.querySelector("#agent-demo-captcha-code").textContent = "-----";
+  document.querySelector("#agent-demo-otp-code").textContent = "------";
+  otpInput.value = "";
   captchaInput.value = "";
   refresh.disabled = true;
   captchaInput.disabled = true;
@@ -717,9 +822,11 @@ async function refreshAgentDemoChallenge(announce = false) {
       showDemoLogin();
       return;
     }
-    if (!response.ok || typeof result.challengeId !== "string" || typeof result.challenge !== "string") throw new Error("challenge failed");
+    if (!response.ok || typeof result.challengeId !== "string" || typeof result.challenge !== "string" || !/^\d{6}$/.test(result.otp)) throw new Error("challenge failed");
     agentDemoChallengeId = result.challengeId;
+    otpInput.value = "";
     captchaInput.value = "";
+    document.querySelector("#agent-demo-otp-code").textContent = result.otp;
     document.querySelector("#agent-demo-captcha-code").textContent = result.challenge;
     if (announce) showToast(t("agentDemoCodeRefreshed"));
   } finally {
@@ -770,7 +877,7 @@ async function runAgentDemo(run) {
 function updateAgentDemoSubmit() {
   const otp = document.querySelector("#agent-demo-otp");
   const captcha = document.querySelector("#agent-demo-captcha");
-  document.querySelector("#submit-agent-demo").disabled = !agentDemoChallengeId || !/^\d{6}$/.test(otp.value) || captcha.value.trim().toUpperCase() !== document.querySelector("#agent-demo-captcha-code").textContent;
+  document.querySelector("#submit-agent-demo").disabled = !agentDemoChallengeId || otp.value !== document.querySelector("#agent-demo-otp-code").textContent || captcha.value.trim().toUpperCase() !== document.querySelector("#agent-demo-captcha-code").textContent;
 }
 
 async function submitAgentDemo(event) {
@@ -778,8 +885,11 @@ async function submitAgentDemo(event) {
   const otp = document.querySelector("#agent-demo-otp");
   const captcha = document.querySelector("#agent-demo-captcha");
   const submit = document.querySelector("#submit-agent-demo");
+  const speakReceipt = agentDemoVerificationSubmitFromVoice;
+  agentDemoVerificationSubmitFromVoice = false;
   if (submit.disabled) {
     document.querySelector("#agent-demo-modal-status").textContent = t("agentDemoInvalid");
+    if (speakReceipt) await speak(t("agentDemoInvalid"));
     return;
   }
   submit.disabled = true;
@@ -803,21 +913,30 @@ async function submitAgentDemo(event) {
     agentDemoCompleted = true;
     agentDemoChallengeId = "";
     showAgentDemoReceipt(result.reference);
+    if (speakReceipt) await speak(`${t("agentDemoComplete")} ${t("agentDemoReference")}: ${result.reference}`);
   } catch {
     otp.disabled = false;
     captcha.disabled = false;
     updateAgentDemoSubmit();
     document.querySelector("#agent-demo-modal-status").textContent = t("agentDemoInvalid");
+    if (speakReceipt) await speak(t("agentDemoInvalid"));
   }
 }
 
 document.querySelector("#agent-demo-dialog").addEventListener("close", () => {
+  setAgentDemoVoiceMode(false);
+  setAgentDemoVerificationVoiceMode(false);
+  if (activeVoiceButton === document.querySelector("#voice-agent-demo") || activeVoiceButton === document.querySelector("#voice-agent-demo-verification")) activeRecognition?.stop();
+  speechRequest += 1;
+  window.speechSynthesis?.cancel();
   agentDemoRun += 1;
   document.querySelector("#start-agent-demo").disabled = false;
   state.agentDemoApplication = null;
   state.agentDemoEligibility = null;
   agentDemoChallengeId = "";
   document.querySelector("#agent-demo-profile-form").reset();
+  agentDemoVoiceSkippedFields.clear();
+  activeAgentDemoField = null;
   renderAgentDemoQuestions();
   document.querySelectorAll("[data-agent-field]").forEach((field) => { field.value = ""; });
   if (!agentDemoCompleted) setAgentDemoStatus("");
@@ -847,6 +966,10 @@ function applyLanguage() {
   document.querySelector(".mobile-menu").setAttribute("aria-label", state.language === "en" ? "Open navigation" : state.language === "hi" ? "नेविगेशन खोलें" : "ನ್ಯಾವಿಗೇಶನ್ ತೆರೆಯಿರಿ");
   document.querySelector("#demo-logout").title = t("demoLogout");
   document.querySelector("#voice-search").title = state.language === "en" ? "Search by voice" : state.language === "hi" ? "आवाज़ से खोजें" : "ಧ್ವನಿಯಿಂದ ಹುಡುಕಿ";
+  document.querySelector("#voice-anywhere").title = t("voiceHelp");
+  document.querySelector("#voice-profile").title = t(document.querySelector("#voice-profile").dataset.i18nAriaLabel);
+  document.querySelector("#voice-agent-demo").title = t(document.querySelector("#voice-agent-demo").dataset.i18nAriaLabel);
+  document.querySelector("#voice-agent-demo-verification").title = t(document.querySelector("#voice-agent-demo-verification").dataset.i18nAriaLabel);
   renderAgentDemoSchemeOptions();
   renderAgentDemoQuestions();
   renderAgentDemoEligibility();
@@ -1047,6 +1170,7 @@ function showToast(message) {
 
 function openProfile() {
   const form = document.querySelector("#profile-form");
+  setProfileVoiceMode(false);
   if (state.profile) {
     for (const [key, value] of Object.entries(state.profile)) {
       const field = form.elements.namedItem(key);
@@ -1054,6 +1178,305 @@ function openProfile() {
     }
   }
   profileDialog.showModal();
+  activeProfileField = profileVoiceFields().find((field) => !profileFieldAnswered(field)) || form.elements.namedItem("age");
+  activeProfileField?.focus({ preventScroll: true });
+}
+
+function setProfileVoiceMode(enabled) {
+  profileVoiceMode = enabled;
+  const button = document.querySelector("#voice-profile");
+  const key = enabled ? "voiceProfileStop" : "voiceProfileAnswer";
+  button.querySelector("span").dataset.i18n = key;
+  button.querySelector("span").textContent = t(key);
+  button.dataset.i18nAriaLabel = key;
+  button.setAttribute("aria-label", t(key));
+  button.title = t(key);
+  button.setAttribute("aria-pressed", String(enabled));
+  if (!enabled) button.classList.remove("listening");
+}
+
+function profileVoiceFields() {
+  return [...document.querySelectorAll("#profile-form .profile-fields input, #profile-form .profile-fields select")].filter((field) => !field.disabled);
+}
+
+function profileFieldAnswered(field) {
+  return field.value !== "" && field.value !== "unknown";
+}
+
+function profileFieldVoicePrompt(field) {
+  const label = field?.closest("label")?.querySelector("span")?.textContent.trim();
+  if (!label) return t("voiceFormIntro");
+  if (field.tagName !== "SELECT") return `${label}. ${t("voiceAnswerHint")}`;
+  if (field.name === "state") return `${label}. ${t("voiceStateHint")}`;
+  if (field.name === "schemeId") return `${label}. ${t("voiceSchemeHint")}`;
+  const choices = [...field.options]
+    .filter((option) => option.value && option.value !== "unknown")
+    .map((option) => option.textContent.trim());
+  const hint = choices.length ? t("voiceAnswerChoices").replace("{choices}", choices.join(", ")) : t("voiceAnswerHint");
+  return `${label}. ${hint}`;
+}
+
+function profileFieldValueFromSpeech(field, spoken) {
+  const answer = normalizeVoiceText(spoken);
+  const skip = /^(skip|pass|not sure|unknown|don t know|do not know|छोड़|छोड़ें|पता नहीं|मालूम नहीं|ಬಿಡಿ|ಗೊತ್ತಿಲ್ಲ)$/;
+  if (skip.test(answer)) return field.tagName === "SELECT" && [...field.options].some((option) => option.value === "unknown") ? "unknown" : "";
+  if (field.type === "number") return parseSpokenAge(spoken);
+
+  const yes = /^(?:yes|yeah|yep|correct|right)(?:\b|$)|^(?:हाँ|हां|जी|ಹां जी|हाँ जी|जी हाँ|जी हां|ಹೌದು|ಸರಿ)(?:\s|$)/;
+  const no = /^(?:no|nope)(?:\b|$)|^(?:नहीं|नही|जी नहीं|ಇಲ್ಲ|ಇಲ್ಲಾ)(?:\s|$)/;
+  if (field.name === "gender") {
+    if (/woman|female|महिला|औरत|ಸ್ತ್ರೀ|ಮಹಿಳೆ/.test(answer)) return "woman";
+    if (/man|male|पुरुष|आदमी|ಪುರುಷ/.test(answer)) return "man";
+  }
+  if (field.name === "occupation" && /farmer|किसान|ರೈತ/.test(answer)) return "farmer";
+  if (field.name === "publicEmployment") {
+    if (/group d|group d|ग्रुप डी|ग्रुप d|ಗ್ರೂಪ್ ಡಿ|mts/.test(answer)) return "group-d";
+    if (no.test(answer) || /none|कोई नहीं|ಯಾರೂ ಇಲ್ಲ/.test(answer)) return "none";
+    if (yes.test(answer)) return "regular";
+  }
+  if (field.name === "monthlyPension") {
+    if (yes.test(answer)) return "over-10000";
+    if (no.test(answer)) return "under-10000";
+  }
+  if (yes.test(answer) && [...field.options].some((option) => option.value === "yes")) return "yes";
+  if (no.test(answer) && [...field.options].some((option) => option.value === "no")) return "no";
+
+  const stateAliases = new Map([
+    ["ಕರ್ನಾಟಕ", "Karnataka"], ["कर्नाटक", "Karnataka"], ["उत्तर प्रदेश", "Uttar Pradesh"],
+    ["उत्तराखंड", "Uttarakhand"], ["राजस्थान", "Rajasthan"], ["बिहार", "Bihar"],
+    ["हिमाचल प्रदेश", "Himachal Pradesh"], ["मध्य प्रदेश", "Madhya Pradesh"], ["महाराष्ट्र", "Maharashtra"],
+    ["पश्चिम बंगाल", "West Bengal"], ["छत्तीसगढ़", "Chhattisgarh"], ["झारखंड", "Jharkhand"], ["पंजाब", "Punjab"],
+    ["हरियाणा", "Haryana"], ["गुजरात", "Gujarat"], ["असम", "Assam"], ["ओडिशा", "Odisha"], ["दिल्ली", "Delhi"],
+    ["ಕೇರಳ", "Kerala"], ["ತಮಿಳುನಾಡು", "Tamil Nadu"], ["ಆಂಧ್ರ ಪ್ರದೇಶ", "Andhra Pradesh"], ["ತೆಲಂಗಾಣ", "Telangana"],
+    ["ಮಹಾರಾಷ್ಟ್ರ", "Maharashtra"], ["ಗುಜರಾತ್", "Gujarat"], ["ಗೋವಾ", "Goa"], ["ಪಂಜಾಬ್", "Punjab"], ["ಹರಿಯಾಣ", "Haryana"],
+    ["ರಾಜಸ್ಥಾನ", "Rajasthan"], ["ಬಿಹಾರ", "Bihar"], ["ಅಸ್ಸಾಂ", "Assam"], ["ಒಡಿಶಾ", "Odisha"], ["ದೆಹಲಿ", "Delhi"],
+    ["ಉತ್ತರ ಪ್ರದೇಶ", "Uttar Pradesh"], ["ಉತ್ತರಾಖಂಡ", "Uttarakhand"], ["ಹಿಮಾಚಲ ಪ್ರದೇಶ", "Himachal Pradesh"],
+    ["ಮಧ್ಯ ಪ್ರದೇಶ", "Madhya Pradesh"], ["ಪಶ್ಚಿಮ ಬಂಗಾಳ", "West Bengal"], ["ಛತ್ತೀಸ್‌ಗಢ", "Chhattisgarh"], ["ಜಾರ್ಖಂಡ್", "Jharkhand"]
+  ]);
+  const stateValue = [...stateAliases.entries()].find(([alias]) => answer.includes(alias))?.[1];
+  const match = [...field.options].find((option) => {
+    const label = normalizeVoiceText(option.textContent);
+    return label === (stateValue || answer) || answer.includes(label) || normalizeVoiceText(option.value) === answer;
+  });
+  return match ? match.value : null;
+}
+
+async function waitForRecognitionEnd(recognition) {
+  const deadline = Date.now() + 5000;
+  while (activeRecognition === recognition && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 40));
+  }
+}
+
+function dispatchVoiceCommand(spoken) {
+  if (isDemoApplicationVoiceCommand(spoken)) {
+    const scheme = matchSchemeFromVoice(spoken, state.schemes);
+    void (async () => {
+      await speak(t("voiceOpeningDemo"));
+      startAgentDemo({ schemeId: scheme?.id || "", profile: { ...(state.profile || {}) } });
+    })();
+    return true;
+  }
+  if (isEligibilityVoiceCommand(spoken)) {
+    const previousRecognition = activeRecognition;
+    openProfile();
+    void (async () => {
+      await waitForRecognitionEnd(previousRecognition);
+      const firstField = activeProfileField || profileVoiceFields()[0];
+      await speak(`${t("voiceFormIntro")} ${profileFieldVoicePrompt(firstField)}`);
+      if (!profileDialog.open) return;
+      setProfileVoiceMode(true);
+      startVoice(profileDialog, document.querySelector("#voice-profile"));
+    })();
+    return true;
+  }
+  return false;
+}
+
+async function handleProfileVoiceInput(spoken) {
+  const answer = normalizeVoiceText(spoken);
+  if (/^(cancel|close|back|रद्द|बंद|ಮುಚ್ಚಿ|ರದ್ದು)$/.test(answer)) {
+    setProfileVoiceMode(false);
+    profileDialog.close();
+    return t("cancel");
+  }
+  if (/^(check my options|check options|check eligibility|check my eligibility|run check|submit|finish|done|मेरे विकल्प जांचें|मेरे विकल्प जाँचें|मेरी पात्रता जांचें|मेरी पात्रता जाँचें|पात्रता जांचें|पात्रता जाँचें|ನನ್ನ ಆಯ್ಕೆ ಪರಿಶೀಲಿಸಿ|ಆಯ್ಕೆ ಪರಿಶೀಲಿಸಿ|ನನ್ನ ಅರ್ಹತೆ ಪರಿಶೀಲಿಸಿ|ಅರ್ಹತೆ ಪರಿಶೀಲಿಸಿ|ಮುಗಿಸಿ|ಸಲ್ಲಿಸಿ)$/.test(answer)) {
+    profileSubmitFromVoice = true;
+    setProfileVoiceMode(false);
+    document.querySelector("#profile-form").requestSubmit();
+    return t("voiceCheckStarting");
+  }
+  const field = activeProfileField || profileVoiceFields()[0];
+  if (!field) return t("voiceCheckReady");
+  const value = profileFieldValueFromSpeech(field, spoken);
+  if (value === null) return `${t("voiceFormUnclear")} ${profileFieldVoicePrompt(field)}`;
+  field.value = value;
+  const fields = profileVoiceFields();
+  const next = fields.slice(fields.indexOf(field) + 1).find((candidate) => !profileFieldAnswered(candidate));
+  if (!next) {
+    setProfileVoiceMode(false);
+    return `${t("voiceAnswerSaved")} ${t("voiceCheckReady")}`;
+  }
+  activeProfileField = next;
+  next.focus({ preventScroll: true });
+  next.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  return `${t("voiceAnswerSaved")} ${profileFieldVoicePrompt(next)}`;
+}
+
+function agentDemoVoiceFields() {
+  return [...document.querySelectorAll("#agent-demo-profile-form input, #agent-demo-profile-form select")]
+    .filter((field) => !field.disabled && field.type !== "submit");
+}
+
+function agentDemoVoiceFieldAnswered(field) {
+  return agentDemoVoiceSkippedFields.has(field.name) || (field.value !== "" && field.value !== "unknown");
+}
+
+function setAgentDemoVoiceMode(enabled) {
+  agentDemoVoiceMode = enabled;
+  const button = document.querySelector("#voice-agent-demo");
+  const key = enabled ? "voiceDemoStop" : "voiceDemoStart";
+  button.querySelector("span").dataset.i18n = key;
+  button.querySelector("span").textContent = t(key);
+  button.dataset.i18nAriaLabel = key;
+  button.setAttribute("aria-label", t(key));
+  button.title = t(key);
+  button.setAttribute("aria-pressed", String(enabled));
+  if (!enabled) button.classList.remove("listening");
+}
+
+function setAgentDemoVerificationVoiceMode(enabled) {
+  agentDemoVerificationVoiceMode = enabled;
+  const button = document.querySelector("#voice-agent-demo-verification");
+  const key = enabled ? "voiceVerifyStop" : "voiceVerifyStart";
+  button.querySelector("span").dataset.i18n = key;
+  button.querySelector("span").textContent = t(key);
+  button.dataset.i18nAriaLabel = key;
+  button.setAttribute("aria-label", t(key));
+  button.title = t(key);
+  button.setAttribute("aria-pressed", String(enabled));
+  if (!enabled) button.classList.remove("listening");
+}
+
+function agentDemoFieldValueFromSpeech(field, spoken) {
+  if (field.type === "number") {
+    if (["age", "girlChildAge"].includes(field.name)) return parseSpokenAge(spoken);
+    return parseSpokenAmount(spoken);
+  }
+  if (field.tagName === "SELECT") {
+    const value = profileFieldValueFromSpeech(field, spoken);
+    if (value !== null) return value;
+    const answer = normalizeVoiceText(spoken);
+    const option = [...field.options].find((item) => {
+      if (!item.value) return false;
+      const label = normalizeVoiceText(item.textContent);
+      return answer.length >= 3 && (label.includes(answer) || answer.includes(label));
+    });
+    return option?.value ?? null;
+  }
+  const value = String(spoken || "").trim();
+  if (!value) return null;
+  return field.maxLength > 0 ? value.slice(0, field.maxLength) : value;
+}
+
+async function handleAgentDemoVoiceInput(spoken) {
+  const answer = normalizeVoiceText(spoken);
+  if (/^(cancel|close|stop|रद्द|बंद|ಮುಚ್ಚಿ|ರದ್ದು)$/.test(answer)) {
+    setAgentDemoVoiceMode(false);
+    return t("cancel");
+  }
+  if (/^(start demo|begin demo|run demo|submit demo|submit demo application|start application|डेमो शुरू करें|आवेदन शुरू करें|डेमो जमा करें|ಡೆಮೋ ಪ್ರಾರಂಭಿಸಿ|ಅರ್ಜಿ ಪ್ರಾರಂಭಿಸಿ|ಡೆಮೋ ಸಲ್ಲಿಸಿ)$/.test(answer)) {
+    const form = document.querySelector("#agent-demo-profile-form");
+    if (!form.reportValidity()) {
+      activeAgentDemoField = form.querySelector(":invalid");
+      activeAgentDemoField?.focus({ preventScroll: true });
+      return `${t("voiceFormUnclear")} ${profileFieldVoicePrompt(activeAgentDemoField)}`;
+    }
+    agentDemoSubmitFromVoice = true;
+    setAgentDemoVoiceMode(false);
+    form.requestSubmit();
+    return t("voiceVerifySubmit");
+  }
+
+  const fields = agentDemoVoiceFields();
+  const field = activeAgentDemoField || fields.find((candidate) => !agentDemoVoiceFieldAnswered(candidate));
+  if (!field) return t("voiceDemoReady");
+  const skipped = /^(skip|pass|not sure|unknown|don t know|do not know|छोड़|छोड़ें|पता नहीं|मालूम नहीं|ಬಿಡಿ|ಗೊತ್ತಿಲ್ಲ)$/;
+  const value = skipped.test(answer) ? (field.tagName === "SELECT" && [...field.options].some((option) => option.value === "unknown") ? "unknown" : "") : agentDemoFieldValueFromSpeech(field, spoken);
+  if (value === null) return `${t("voiceFormUnclear")} ${profileFieldVoicePrompt(field)}`;
+  field.value = value;
+  if (skipped.test(answer)) agentDemoVoiceSkippedFields.add(field.name);
+  else agentDemoVoiceSkippedFields.delete(field.name);
+  field.dispatchEvent(new Event("input", { bubbles: true }));
+  field.dispatchEvent(new Event("change", { bubbles: true }));
+
+  const refreshedFields = agentDemoVoiceFields();
+  const next = refreshedFields.slice(refreshedFields.indexOf(field) + 1).find((candidate) => !agentDemoVoiceFieldAnswered(candidate));
+  if (!next) {
+    activeAgentDemoField = null;
+    return `${t("voiceAnswerSaved")} ${t("voiceDemoReady")}`;
+  }
+  activeAgentDemoField = next;
+  next.focus({ preventScroll: true });
+  next.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  return `${t("voiceAnswerSaved")} ${profileFieldVoicePrompt(next)}`;
+}
+
+async function handleAgentDemoVerificationVoiceInput(spoken) {
+  const answer = normalizeVoiceText(spoken);
+  if (/^(cancel|close|stop|रद्द|बंद|ಮುಚ್ಚಿ|ರದ್ದು)$/.test(answer)) {
+    setAgentDemoVerificationVoiceMode(false);
+    return t("cancel");
+  }
+  if (/^(refresh code|new code|refresh otp|कोड बदलें|नया कोड|ಕೋಡ್ ಬದಲಿಸಿ|ಹೊಸ ಕೋಡ್)$/.test(answer)) {
+    await refreshAgentDemoChallenge(true);
+    activeAgentDemoVerificationField = "otp";
+    const otp = document.querySelector("#agent-demo-otp-code").textContent.split("").join(" ");
+    const captcha = document.querySelector("#agent-demo-captcha-code").textContent.split("").join(" ");
+    return `${t("agentDemoCodeRefreshed")} ${t("voiceVerifyOtp")} ${otp}. ${t("voiceVerifyCaptcha")} ${captcha}`;
+  }
+  if (/^(otp|demo otp|ओटीपी|डेमो ओटीपी|ಒಟಿಪಿ|ಡೆಮೋ ಒಟಿಪಿ)$/.test(answer)) {
+    activeAgentDemoVerificationField = "otp";
+    const otp = document.querySelector("#agent-demo-otp-code").textContent.split("").join(" ");
+    return `${t("voiceVerifyOtp")} ${otp}`;
+  }
+  if (/^(captcha|demo code|कैप्चा|डेमो कोड|ಕ್ಯಾಪ್ಚಾ|ಡೆಮೋ ಕೋಡ್)$/.test(answer)) {
+    activeAgentDemoVerificationField = "captcha";
+    const captcha = document.querySelector("#agent-demo-captcha-code").textContent.split("").join(" ");
+    return `${t("voiceVerifyCaptcha")} ${captcha}`;
+  }
+  if (/^(submit|submit demo|submit demo application|finish|done|डेमो जमा करें|जमा करें|ಡೆಮೋ ಸಲ್ಲಿಸಿ|ಸಲ್ಲಿಸಿ)$/.test(answer)) {
+    const submit = document.querySelector("#submit-agent-demo");
+    if (!submit.disabled) {
+      agentDemoVerificationSubmitFromVoice = true;
+      setAgentDemoVerificationVoiceMode(false);
+      document.querySelector("#agent-demo-form").requestSubmit();
+      return t("voiceVerifySubmit");
+    }
+    return t("agentDemoInvalid");
+  }
+
+  const field = activeAgentDemoVerificationField || "otp";
+  if (field === "otp") {
+    const digits = spokenOtpDigits(spoken);
+    if (!digits) return `${t("voiceVerifyUnclear")} ${t("voiceVerifyOtp")}`;
+    document.querySelector("#agent-demo-otp").value = digits;
+    activeAgentDemoVerificationField = "captcha";
+    updateAgentDemoSubmit();
+    const captcha = document.querySelector("#agent-demo-captcha-code").textContent.split("").join(" ");
+    return `${t("voiceAnswerSaved")} ${t("voiceVerifyCaptcha")} ${captcha}`;
+  }
+  const captcha = answer.replace(/[^a-z0-9]/g, "").toUpperCase();
+  if (!captcha) return `${t("voiceVerifyUnclear")} ${t("voiceVerifyCaptcha")}`;
+  document.querySelector("#agent-demo-captcha").value = captcha;
+  updateAgentDemoSubmit();
+  if (document.querySelector("#submit-agent-demo").disabled) {
+    activeAgentDemoVerificationField = "captcha";
+    const captchaCode = document.querySelector("#agent-demo-captcha-code").textContent.split("").join(" ");
+    return `${t("agentDemoInvalid")} ${t("voiceVerifyCaptcha")} ${captchaCode}`;
+  }
+  activeAgentDemoVerificationField = "otp";
+  return `${t("voiceAnswerSaved")} ${t("voiceVerifyReady")}`;
 }
 
 function updateDashboard(result) {
@@ -1108,6 +1531,19 @@ function renderAssistantReply(message, result) {
     question.textContent = result.question;
     bubble.append(question);
   }
+  if (result.profile?.occupation) {
+    const offer = document.createElement("div");
+    offer.className = "eligibility-offer";
+    const prompt = document.createElement("p");
+    prompt.textContent = t("eligibilityOffer");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "outline-button";
+    button.dataset.openProfile = "";
+    button.textContent = t("openEligibility");
+    offer.append(prompt, button);
+    bubble.append(offer);
+  }
   if (result.schemes?.length) {
     const links = document.createElement("div");
     links.className = "chat-scheme-links";
@@ -1127,6 +1563,16 @@ function renderAssistantReply(message, result) {
       source.rel = "noreferrer";
       source.textContent = `${t("officialSource")}: ${localizedSchemeName(known)}`;
       links.append(source);
+      const screening = state.screening.get(known.id);
+      if (screening && screening.status !== "unlikely") {
+        const demoButton = document.createElement("button");
+        demoButton.type = "button";
+        demoButton.className = "chat-scheme-link";
+        demoButton.dataset.demoScheme = known.id;
+        demoButton.demoProfile = { ...(state.profile || {}) };
+        demoButton.textContent = `${t("demoForScheme")}: ${localizedSchemeName(known)}`;
+        links.append(demoButton);
+      }
     });
     if (links.childElementCount) bubble.append(links);
   }
@@ -1172,7 +1618,7 @@ function renderAssistantReply(message, result) {
   audioButton.type = "button";
   audioButton.title = t("readAnswer");
   audioButton.setAttribute("aria-label", t("readAnswer"));
-  audioButton.dataset.speakText = [result.answer, result.question].filter(Boolean).join(". ");
+  audioButton.dataset.speakText = assistantSpeechText(result);
   audioButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l4 3V7l-4 3H4Z"/><path d="M15 9a4 4 0 0 1 0 6m2.5-8a7 7 0 0 1 0 10"/></svg>';
   bubble.append(audioButton);
   const mode = document.createElement("span");
@@ -1184,7 +1630,11 @@ function renderAssistantReply(message, result) {
   updateDashboard(result);
 }
 
-async function askAssistant(text) {
+function assistantSpeechText(result) {
+  return [result.answer, result.question, result.profile?.occupation && t("eligibilityOffer")].filter(Boolean).join(". ");
+}
+
+async function askAssistant(text, { speakReply = false, focusInput = true } = {}) {
   text = String(text || "").trim();
   if (!text) {
     showToast(t("askPlaceholder"));
@@ -1222,26 +1672,45 @@ async function askAssistant(text) {
     renderAssistantReply(text, result);
     state.history.push({ role: "assistant", content: [result.answer, result.question].filter(Boolean).join(" ") });
     state.history = state.history.slice(-8);
+    if (speakReply) await speak(assistantSpeechText(result));
   } catch (error) {
     thinking.remove();
     renderAssistantReply(text, { answer: error.message || t("assistantError"), mode: "demo" });
     state.history.push({ role: "assistant", content: error.message || t("assistantError") });
     state.history = state.history.slice(-8);
+    if (speakReply) await speak(error.message || t("assistantError"));
   } finally {
     submit.disabled = false;
-    assistantInput.focus();
+    if (focusInput) assistantInput.focus();
   }
 }
 
 function startVoice(target, button) {
-  const status = document.querySelector("#voice-state");
+  const profileTarget = target === profileDialog;
+  const agentDemoTarget = target === agentDemoDialog && button.id === "voice-agent-demo";
+  const agentDemoVerificationTarget = target === agentDemoDialog && button.id === "voice-agent-demo-verification";
+  const statusId = profileTarget ? "#profile-voice-state" : agentDemoTarget ? "#agent-demo-voice-state" : agentDemoVerificationTarget ? "#agent-demo-verification-voice-state" : "#voice-state";
+  const status = document.querySelector(statusId);
   const setStatus = (key) => {
     status.hidden = !key;
     status.textContent = key ? t(key) : "";
     status.dataset.state = key === "listening" ? "listening" : key === "processing" ? "processing" : key === "voiceErrorState" ? "error" : "ready";
   };
+  if (activeRecognition) {
+    if (activeVoiceButton === button) activeRecognition.stop();
+    else {
+      if (profileTarget) setProfileVoiceMode(false);
+      if (agentDemoTarget) setAgentDemoVoiceMode(false);
+      if (agentDemoVerificationTarget) setAgentDemoVerificationVoiceMode(false);
+      showToast(t("voiceError"));
+    }
+    return;
+  }
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!Recognition) {
+    if (profileTarget) setProfileVoiceMode(false);
+    if (agentDemoTarget) setAgentDemoVoiceMode(false);
+    if (agentDemoVerificationTarget) setAgentDemoVerificationVoiceMode(false);
     setStatus("unsupported");
     showToast(t("speechUnsupported"));
     return;
@@ -1250,6 +1719,9 @@ function startVoice(target, button) {
   recognition.lang = ({ en: "en-IN", hi: "hi-IN", kn: "kn-IN" })[state.language] || "en-IN";
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
+  window.speechSynthesis?.cancel();
+  activeRecognition = recognition;
+  activeVoiceButton = button;
   button.classList.add("listening");
   button.setAttribute("aria-pressed", "true");
   setStatus("listening");
@@ -1257,23 +1729,71 @@ function startVoice(target, button) {
   recognition.onresult = (event) => {
     setStatus("processing");
     const spoken = event.results?.[0]?.[0]?.transcript || "";
-    target.value = spoken;
     if (target === searchInput) {
+      target.value = spoken;
       state.query = spoken;
       renderSchemes();
+      const visible = filteredSchemes();
+      const names = visible.slice(0, 3).map(localizedSchemeName);
+      const summary = `${t("voiceSearchFound").replace("{count}", String(visible.length))} ${names.join(". ")}`;
+      void speak(summary).finally(() => setStatus("ready"));
+    } else if (profileTarget) {
+      void (async () => {
+        const prompt = await handleProfileVoiceInput(spoken);
+        await speak(prompt);
+        await waitForRecognitionEnd(recognition);
+        if (profileVoiceMode && profileDialog.open) startVoice(profileDialog, button);
+        else setStatus("ready");
+      })();
+    } else if (agentDemoTarget) {
+      void (async () => {
+        const prompt = await handleAgentDemoVoiceInput(spoken);
+        await speak(prompt);
+        await waitForRecognitionEnd(recognition);
+        if (agentDemoVoiceMode && agentDemoDialog.open) startVoice(agentDemoDialog, button);
+        else setStatus("ready");
+      })();
+    } else if (agentDemoVerificationTarget) {
+      void (async () => {
+        const prompt = await handleAgentDemoVerificationVoiceInput(spoken);
+        await speak(prompt);
+        await waitForRecognitionEnd(recognition);
+        if (agentDemoVerificationVoiceMode && agentDemoDialog.open) startVoice(agentDemoDialog, button);
+        else setStatus("ready");
+      })();
+    } else if (spoken && dispatchVoiceCommand(spoken)) {
+      return;
     } else if (spoken) {
-      askAssistant(spoken);
+      target.value = spoken;
+      void askAssistant(spoken, { speakReply: true, focusInput: false }).finally(() => setStatus("ready"));
+    } else {
+      setStatus("ready");
     }
   };
-  recognition.onerror = () => { setStatus("voiceErrorState"); showToast(t("voiceError")); };
+  recognition.onerror = () => {
+    if (profileTarget) setProfileVoiceMode(false);
+    if (agentDemoTarget) setAgentDemoVoiceMode(false);
+    if (agentDemoVerificationTarget) setAgentDemoVerificationVoiceMode(false);
+    setStatus("voiceErrorState");
+    showToast(t("voiceError"));
+  };
   recognition.onend = () => {
+    if (activeRecognition === recognition) {
+      activeRecognition = null;
+      activeVoiceButton = null;
+    }
     button.classList.remove("listening");
-    button.setAttribute("aria-pressed", "false");
+    button.setAttribute("aria-pressed", String(profileTarget ? profileVoiceMode : agentDemoTarget ? agentDemoVoiceMode : agentDemoVerificationTarget && agentDemoVerificationVoiceMode));
     if (status.dataset.state === "listening") setStatus("ready");
   };
   try {
     recognition.start();
   } catch {
+    activeRecognition = null;
+    activeVoiceButton = null;
+    if (profileTarget) setProfileVoiceMode(false);
+    if (agentDemoTarget) setAgentDemoVoiceMode(false);
+    if (agentDemoVerificationTarget) setAgentDemoVerificationVoiceMode(false);
     button.classList.remove("listening");
     button.setAttribute("aria-pressed", "false");
     setStatus("voiceErrorState");
@@ -1284,6 +1804,7 @@ function startVoice(target, button) {
 async function speak(text) {
   if (!("speechSynthesis" in window) || !text) return;
   const synth = window.speechSynthesis;
+  const request = ++speechRequest;
   synth.cancel();
   let voices = synth.getVoices();
   if (!voices.length) {
@@ -1296,14 +1817,16 @@ async function speak(text) {
         resolve(synth.getVoices());
       };
       synth.addEventListener("voiceschanged", finish, { once: true });
-      window.setTimeout(finish, 1000);
+      window.setTimeout(finish, 1800);
     });
   }
+  if (request !== speechRequest) return;
   const language = state.language;
   const locale = ({ en: "en-IN", hi: "hi-IN", kn: "kn-IN" })[language] || "en-IN";
-  const prefix = `${language}-`;
-  const voice = voices.find((item) => item.lang.toLowerCase() === locale.toLowerCase())
-    || voices.find((item) => item.lang.toLowerCase().startsWith(prefix));
+  const normalizeLocale = (value) => String(value || "").replaceAll("_", "-").toLowerCase();
+  const voice = voices.find((item) => normalizeLocale(item.lang) === normalizeLocale(locale))
+    || voices.find((item) => normalizeLocale(item.lang) === language)
+    || voices.find((item) => normalizeLocale(item.lang).startsWith(`${language}-`));
   if (!voice && language !== "en") {
     showToast(t("speechVoiceUnavailable"));
     return;
@@ -1311,10 +1834,22 @@ async function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = locale;
   if (voice) utterance.voice = voice;
-  utterance.onerror = (event) => {
-    if (event.error !== "canceled" && event.error !== "interrupted") showToast(t("speechVoiceError"));
-  };
-  synth.speak(utterance);
+  await new Promise((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(safetyTimer);
+      resolve();
+    };
+    const safetyTimer = window.setTimeout(finish, Math.max(8000, Math.min(120000, text.length * 180)));
+    utterance.onend = finish;
+    utterance.onerror = (event) => {
+      if (event.error !== "canceled" && event.error !== "interrupted") showToast(t("speechVoiceError"));
+      finish();
+    };
+    synth.speak(utterance);
+  });
 }
 
 function handleBookmark(id) {
@@ -1338,7 +1873,7 @@ function handleCompare(id) {
   renderSchemes();
 }
 
-async function runEligibility(profile) {
+async function runEligibility(profile, { speakReply = false } = {}) {
   const response = await fetch("/api/eligibility", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -1350,16 +1885,21 @@ async function runEligibility(profile) {
   renderSchemes();
   const possible = (results || []).filter((item) => item.status === "possible-match");
   const uncertain = (results || []).filter((item) => ["needs-information", "needs-confirmation"].includes(item.status));
-  const outcome = possible.length
-    ? `${t("listSummary")}: ${possible.map((item) => state.schemes.find((scheme) => scheme.id === item.schemeId)?.name || item.name).join(", ")}. ${t("sourceCaution")}`
-    : `${t("listSummary")}: ${uncertain.length ? uncertain.map((item) => state.schemes.find((scheme) => scheme.id === item.schemeId)?.name || item.name).join(", ") : t("noResults")}. ${t("sourceCaution")}`;
+  const candidates = possible.length ? possible : uncertain;
+  const names = candidates.map((item) => {
+    const scheme = state.schemes.find((candidate) => candidate.id === item.schemeId);
+    return scheme ? localizedSchemeName(scheme) : item.name;
+  });
+  const outcome = `${t("listSummary")}: ${names.length ? names.join(", ") : t("noResults")}. ${t("sourceCaution")}${names.length ? ` ${t("demoVoiceHint")}` : ""}`;
   renderAssistantReply("", { answer: outcome, mode: "demo", schemes: possible.length ? possible : uncertain });
   document.querySelector("#schemes").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (speakReply) await speak(outcome);
 }
 
 function setLanguage(language) {
   state.language = ["en", "hi", "kn"].includes(language) ? language : "en";
   localStorage.setItem("sarkari-language", state.language);
+  speechRequest += 1;
   window.speechSynthesis?.cancel();
   applyLanguage();
 }
@@ -1392,9 +1932,13 @@ const needPrompts = {
 document.querySelector("#demo-login-form").addEventListener("submit", signInToDemo);
 demoLoginDialog.addEventListener("cancel", (event) => event.preventDefault());
 document.querySelector("#demo-logout").addEventListener("click", signOutOfDemo);
-document.querySelector("#start-agent-demo").addEventListener("click", startAgentDemo);
+document.querySelector("#start-agent-demo").addEventListener("click", () => startAgentDemo());
 document.querySelector("#agent-demo-profile-form").addEventListener("submit", beginAgentDemo);
-document.querySelector("#agent-demo-scheme").addEventListener("change", renderAgentDemoQuestions);
+document.querySelector("#agent-demo-scheme").addEventListener("change", () => {
+  renderAgentDemoQuestions();
+  const fields = agentDemoVoiceFields();
+  activeAgentDemoField = fields.find((field) => !agentDemoVoiceFieldAnswered(field)) || null;
+});
 document.querySelector("#agent-demo-edit-details").addEventListener("click", () => {
   document.querySelector("#agent-demo-output").hidden = true;
   document.querySelector("#agent-demo-intake").hidden = false;
@@ -1549,6 +2093,11 @@ document.addEventListener("click", (event) => {
     openScheme(open.dataset.openScheme);
     return;
   }
+  const demoScheme = event.target.closest("[data-demo-scheme]");
+  if (demoScheme) {
+    startAgentDemo({ schemeId: demoScheme.dataset.demoScheme, profile: { ...(demoScheme.demoProfile || state.profile || {}) } });
+    return;
+  }
   if (event.target.closest("[data-open-profile]")) {
     openProfile();
     return;
@@ -1587,6 +2136,10 @@ document.querySelector("#compare-open").addEventListener("click", openCompare);
 
 document.querySelector("#profile-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  const speakReply = profileSubmitFromVoice || profileVoiceMode;
+  profileSubmitFromVoice = false;
+  setProfileVoiceMode(false);
+  if (activeVoiceButton === document.querySelector("#voice-profile")) activeRecognition?.stop();
   const values = Object.fromEntries(new FormData(event.currentTarget).entries());
   if (values.age) values.age = Number(values.age);
   else delete values.age;
@@ -1596,19 +2149,105 @@ document.querySelector("#profile-form").addEventListener("submit", async (event)
   state.profile = values;
   profileDialog.close();
   try {
-    await runEligibility(values);
+    await runEligibility(values, { speakReply });
   } catch (error) {
     showToast(error.message);
+    if (speakReply) await speak(error.message);
   }
+});
+document.querySelector("#profile-form").addEventListener("focusin", (event) => {
+  if (event.target.matches("input, select")) activeProfileField = event.target;
+});
+document.querySelector("#profile-dialog").addEventListener("close", () => {
+  setProfileVoiceMode(false);
+  speechRequest += 1;
+  window.speechSynthesis?.cancel();
+  if (activeVoiceButton === document.querySelector("#voice-profile")) activeRecognition?.stop();
+});
+document.querySelector("#voice-profile").addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  if (profileVoiceMode) {
+    setProfileVoiceMode(false);
+    speechRequest += 1;
+    window.speechSynthesis?.cancel();
+    if (activeVoiceButton === button) activeRecognition?.stop();
+    const status = document.querySelector("#profile-voice-state");
+    status.hidden = false;
+    status.textContent = t("ready");
+    status.dataset.state = "ready";
+    return;
+  }
+  activeProfileField ||= profileVoiceFields()[0];
+  setProfileVoiceMode(true);
+  const status = document.querySelector("#profile-voice-state");
+  status.hidden = false;
+  status.textContent = t("processing");
+  status.dataset.state = "processing";
+  await speak(profileFieldVoicePrompt(activeProfileField));
+  if (profileVoiceMode && profileDialog.open) startVoice(profileDialog, button);
+});
+document.querySelector("#voice-agent-demo").addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  if (agentDemoVoiceMode) {
+    setAgentDemoVoiceMode(false);
+    speechRequest += 1;
+    window.speechSynthesis?.cancel();
+    if (activeVoiceButton === button) activeRecognition?.stop();
+    const status = document.querySelector("#agent-demo-voice-state");
+    status.hidden = false;
+    status.textContent = t("ready");
+    status.dataset.state = "ready";
+    return;
+  }
+  const fields = agentDemoVoiceFields();
+  activeAgentDemoField = fields.find((field) => !agentDemoVoiceFieldAnswered(field)) || fields[0] || null;
+  setAgentDemoVoiceMode(true);
+  const status = document.querySelector("#agent-demo-voice-state");
+  status.hidden = false;
+  status.textContent = t("processing");
+  status.dataset.state = "processing";
+  await speak(profileFieldVoicePrompt(activeAgentDemoField));
+  if (agentDemoVoiceMode && agentDemoDialog.open) startVoice(agentDemoDialog, button);
+});
+document.querySelector("#voice-agent-demo-verification").addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  if (agentDemoVerificationVoiceMode) {
+    setAgentDemoVerificationVoiceMode(false);
+    speechRequest += 1;
+    window.speechSynthesis?.cancel();
+    if (activeVoiceButton === button) activeRecognition?.stop();
+    const status = document.querySelector("#agent-demo-verification-voice-state");
+    status.hidden = false;
+    status.textContent = t("ready");
+    status.dataset.state = "ready";
+    return;
+  }
+  activeAgentDemoVerificationField = "otp";
+  setAgentDemoVerificationVoiceMode(true);
+  const status = document.querySelector("#agent-demo-verification-voice-state");
+  status.hidden = false;
+  status.textContent = t("processing");
+  status.dataset.state = "processing";
+  await speak(`${t("voiceVerifyOtp")} ${document.querySelector("#agent-demo-otp-code").textContent.split("").join(" ")}`);
+  if (agentDemoVerificationVoiceMode && agentDemoDialog.open) startVoice(agentDemoDialog, button);
+});
+document.querySelector("#agent-demo-profile-form").addEventListener("focusin", (event) => {
+  if (event.target.matches("input, select")) activeAgentDemoField = event.target;
 });
 
 document.querySelector("#assistant-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  askAssistant(assistantInput.value);
+  const message = assistantInput.value.trim();
+  if (dispatchVoiceCommand(message)) {
+    assistantInput.value = "";
+    return;
+  }
+  askAssistant(message);
 });
 document.querySelectorAll(".suggestion-list [data-prompt]").forEach((button) => button.addEventListener("click", () => askAssistant(button.dataset.prompt)));
 document.querySelector("#voice-search").addEventListener("click", (event) => startVoice(searchInput, event.currentTarget));
 document.querySelector("#voice-chat").addEventListener("click", (event) => startVoice(assistantInput, event.currentTarget));
+document.querySelector("#voice-anywhere").addEventListener("click", (event) => startVoice(assistantInput, event.currentTarget));
 
 document.querySelector("#csc-form").addEventListener("submit", (event) => {
   event.preventDefault();
